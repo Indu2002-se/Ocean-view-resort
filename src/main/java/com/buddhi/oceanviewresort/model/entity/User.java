@@ -1,4 +1,4 @@
-package com.buddhi.oceanviewresort.model;
+package com.buddhi.oceanviewresort.model.entity;
 
 public class User {
     private int userID;

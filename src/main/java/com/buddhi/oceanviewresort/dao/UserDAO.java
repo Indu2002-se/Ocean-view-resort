@@ -1,7 +1,7 @@
 package com.buddhi.oceanviewresort.dao;
 
 import com.buddhi.oceanviewresort.config.DBConnection;
-import com.buddhi.oceanviewresort.model.User;
+import com.buddhi.oceanviewresort.model.entity.User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

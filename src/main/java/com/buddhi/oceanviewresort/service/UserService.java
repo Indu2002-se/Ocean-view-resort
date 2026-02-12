@@ -1,7 +1,7 @@
 package com.buddhi.oceanviewresort.service;
 
 import com.buddhi.oceanviewresort.dao.UserDAO;
-import com.buddhi.oceanviewresort.model.User;
+import com.buddhi.oceanviewresort.model.entity.User;
 
 import java.util.List;
 
