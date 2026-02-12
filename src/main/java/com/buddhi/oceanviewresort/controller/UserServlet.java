@@ -1,6 +1,6 @@
 package com.buddhi.oceanviewresort.controller;
 
-import com.buddhi.oceanviewresort.model.User;
+import com.buddhi.oceanviewresort.model.entity.User;
 import com.buddhi.oceanviewresort.service.UserService;
 
 import javax.servlet.ServletException;
