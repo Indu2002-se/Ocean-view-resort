@@ -54,12 +54,12 @@ public class ReservationService {
         return true;
     }
 
-//    public boolean deleteReservation(String reservationNo) {
-//        // Delete associated bill first due to foreign key constraint
+    public boolean deleteReservation(String reservationNo) {
+        // Delete associated bill first due to foreign key constraint
 //        BillService billService = new BillService();
 //        billService.deleteBill(reservationNo);
-//        return reservationDAO.deleteReservation(reservationNo);
-//    }
+        return reservationDAO.deleteReservation(reservationNo);
+    }
 
     public Reservation getReservationByNo(String reservationNo) {
         return reservationDAO.getReservationByNo(reservationNo);
