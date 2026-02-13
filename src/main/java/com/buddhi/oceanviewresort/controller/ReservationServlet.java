@@ -5,6 +5,7 @@ import com.buddhi.oceanviewresort.service.ReservationService;
 import com.buddhi.oceanviewresort.service.UserService;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,6 +13,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@WebServlet("/reservation-servlet")
 public class ReservationServlet extends HttpServlet {
     private ReservationService reservationService;
     private UserService userService;
