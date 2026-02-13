@@ -4,12 +4,13 @@ import com.buddhi.oceanviewresort.model.entity.User;
 import com.buddhi.oceanviewresort.service.UserService;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
-
+@WebServlet(urlPatterns = { "/signup-servlet", "/user-servlet" })
 public class UserServlet extends HttpServlet {
     private UserService userService;
 
