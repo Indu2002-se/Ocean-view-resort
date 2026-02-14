@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet("/bill")
+@WebServlet("/bill-servlet")
 public class BillServlet extends HttpServlet {
     private BillService billService;
 
@@ -30,26 +30,37 @@ public class BillServlet extends HttpServlet {
                 if (reservationNo != null && !reservationNo.isEmpty()) {
                     Bill bill = billService.generateBill(reservationNo);
                     req.setAttribute("bill", bill);
-                    req.setAttribute("message", "Bill generated successfully!");
+                    req.getSession().setAttribute("message", "Bill generated successfully!");
+                    req.getSession().setAttribute("messageType", "success");
+                    resp.sendRedirect(req.getContextPath() + "/bill-servlet?action=view&reservationNo=" + reservationNo);
+                    return;
                 } else {
-                    req.setAttribute("error", "Reservation Number is required to generate bill.");
+                    req.getSession().setAttribute("message", "Reservation Number is required to generate bill.");
+                    req.getSession().setAttribute("messageType", "error");
                 }
             } else if ("view".equals(action)) {
                 if (reservationNo != null && !reservationNo.isEmpty()) {
                     Bill bill = billService.getBill(reservationNo);
                     if (bill != null) {
                         req.setAttribute("bill", bill);
+                        req.setAttribute("reservation", billService.getReservationForBill(reservationNo));
+                        req.getRequestDispatcher("/Bill/ViewBill.jsp").forward(req, resp);
+                        return;
                     } else {
-                        req.setAttribute("error", "Bill not found for reservation: " + reservationNo);
+                        req.getSession().setAttribute("message", "Bill not found for reservation: " + reservationNo);
+                        req.getSession().setAttribute("messageType", "error");
                     }
                 }
             }
         } catch (Exception e) {
-            req.setAttribute("error", "Error: " + e.getMessage());
+            req.getSession().setAttribute("message", "Error: " + e.getMessage());
+            req.getSession().setAttribute("messageType", "error");
             e.printStackTrace();
         }
 
-        req.getRequestDispatcher("/Bill/bill.jsp").forward(req, resp);
+        // Default: show list of reservations for bill generation
+        req.setAttribute("reservations", billService.getAllConfirmedReservations());
+        req.getRequestDispatcher("/Bill/GenerateBill.jsp").forward(req, resp);
     }
 
     @Override

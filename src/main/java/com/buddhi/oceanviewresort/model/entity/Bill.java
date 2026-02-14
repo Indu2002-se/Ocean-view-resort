@@ -70,7 +70,15 @@ public class Bill {
         return amount;
     }
 
+    public double getTotalAmount() {
+        return amount;
+    }
+
     public LocalDateTime getIssueDate() {
+        return issueDate;
+    }
+
+    public LocalDateTime getGeneratedDate() {
         return issueDate;
     }
 
