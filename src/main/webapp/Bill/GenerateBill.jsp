@@ -2,6 +2,14 @@
     <%@ page import="java.util.List" %>
         <%@ page import="com.buddhi.oceanviewresort.model.entity.Reservation" %>
             <%@ page import="java.time.format.DateTimeFormatter" %>
+<% 
+    String username = (String) session.getAttribute("username");
+    String role = (String) session.getAttribute("role");
+    if (username == null) {
+        response.sendRedirect(request.getContextPath() + "/Auth/Login.jsp");
+        return;
+    }
+%>
                 <!DOCTYPE html>
                 <html lang="en">
 
@@ -10,32 +18,36 @@
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
                     <title>Generate Bill - Ocean View Resort</title>
                     <style>
-                        /* Reusing core styles from ViewReservation.jsp for consistency */
                         * {
-                            margin: 0;
+                            margin-right: 20px;
                             padding: 0;
                             box-sizing: border-box;
                         }
 
                         body {
-                            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                            font-family: 'Poppins', 'Segoe UI', sans-serif;
                             background: #1a1a1a;
                             color: #fff;
                             overflow-x: hidden;
                         }
 
+                        /* Sidebar Navigation */
                         .sidebar {
                             position: fixed;
                             left: 0;
                             top: 0;
-                            width: 140px;
+                            width: 260px;
                             height: 100vh;
                             background: #0d0d0d;
+                            border-right: 1px solid rgba(255, 255, 255, 0.05);
                             z-index: 1000;
-                            padding: 40px 20px;
                             display: flex;
                             flex-direction: column;
-                            justify-content: space-between;
+                        }
+
+                        .sidebar-header {
+                            padding: 30px 25px;
+                            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
                         }
 
                         .logo {
@@ -44,11 +56,142 @@
                             color: #fff;
                             letter-spacing: 1px;
                             text-transform: lowercase;
+                            margin-bottom: 5px;
                         }
 
                         .logo span {
                             color: #c9a55c;
                         }
+
+                        .logo-subtitle {
+                            font-size: 10px;
+                            letter-spacing: 2px;
+                            text-transform: uppercase;
+                            color: rgba(255, 255, 255, 0.4);
+                        }
+
+                        .sidebar-menu {
+                            flex: 1;
+                            padding: 20px 0;
+                            overflow-y: auto;
+                        }
+
+                        .menu-section {
+                            margin-bottom: 30px;
+                        }
+
+                        .menu-title {
+                            font-size: 10px;
+                            letter-spacing: 2px;
+                            text-transform: uppercase;
+                            color: rgba(255, 255, 255, 0.4);
+                            padding: 0 25px;
+                            margin-bottom: 10px;
+                        }
+
+                        .menu-item {
+                            display: flex;
+                            align-items: center;
+                            gap: 15px;
+                            padding: 14px 25px;
+                            color: rgba(255, 255, 255, 0.7);
+                            text-decoration: none;
+                            transition: all 0.3s;
+                            font-size: 13px;
+                            border-left: 3px solid transparent;
+                        }
+
+                        .menu-item:hover {
+                            background: rgba(255, 255, 255, 0.05);
+                            color: #c9a55c;
+                            border-left-color: #c9a55c;
+                        }
+
+                        .menu-item.active {
+                            background: rgba(201, 165, 92, 0.1);
+                            color: #c9a55c;
+                            border-left-color: #c9a55c;
+                        }
+
+                        .menu-icon {
+                            font-size: 18px;
+                            width: 20px;
+                            text-align: center;
+                        }
+
+                        .sidebar-footer {
+                            padding: 20px 25px;
+                            border-top: 1px solid rgba(255, 255, 255, 0.05);
+                        }
+
+                        .user-info {
+                            display: flex;
+                            align-items: center;
+                            gap: 12px;
+                            margin-bottom: 15px;
+                        }
+
+                        .user-avatar {
+                            width: 40px;
+                            height: 40px;
+                            border-radius: 50%;
+                            background: linear-gradient(135deg, #c9a55c, #f4e5c3);
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            font-weight: 600;
+                            color: #1a1a1a;
+                        }
+
+                        .user-details {
+                            flex: 1;
+                        }
+
+                        .user-name {
+                            font-size: 13px;
+                            font-weight: 600;
+                            margin-bottom: 2px;
+                        }
+
+                        .user-role {
+                            font-size: 10px;
+                            letter-spacing: 1px;
+                            text-transform: uppercase;
+                            color: rgba(255, 255, 255, 0.4);
+                        }
+
+                        .logout-btn {
+                            width: 100%;
+                            padding: 10px;
+                            background: rgba(255, 255, 255, 0.05);
+                            border: 1px solid rgba(255, 255, 255, 0.1);
+                            border-radius: 6px;
+                            color: rgba(255, 255, 255, 0.7);
+                            font-size: 11px;
+                            letter-spacing: 1px;
+                            text-transform: uppercase;
+                            cursor: pointer;
+                            transition: all 0.3s;
+                        }
+
+                        .logout-btn:hover {
+                            background: rgba(220, 53, 69, 0.1);
+                            border-color: rgba(220, 53, 69, 0.3);
+                            color: #ff6b6b;
+                        }
+
+                        /* Main Content */
+                        .main-content {
+                            margin-left: 260px;
+                            min-height: 100vh;
+                        }
+
+                        .reservation-container {
+                            padding: 40px;
+                            max-width: 1600px;
+                            margin: 0 auto;
+                        }
+
 
                         .section-number {
                             font-size: 64px;
@@ -200,8 +343,10 @@
 
                         .bill-grid {
                             display: grid;
-                            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-                            gap: 30px;
+                            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+                            gap: 25px;
+                            margin-bottom: 40px;
+                            margin-right: 20px;
                         }
 
                         .bill-card {
@@ -210,6 +355,9 @@
                             border-radius: 12px;
                             overflow: hidden;
                             transition: all 0.3s;
+                            display: flex;
+                            flex-direction: column;
+                            height: 100%;
                         }
 
                         .bill-card:hover {
@@ -225,6 +373,7 @@
                             display: flex;
                             justify-content: space-between;
                             align-items: center;
+                            flex-shrink: 0;
                         }
 
                         .res-no {
@@ -251,24 +400,28 @@
 
                         .card-body {
                             padding: 25px 20px;
+                            flex: 1;
+                            display: flex;
+                            flex-direction: column;
                         }
 
                         .guest-name {
                             font-size: 18px;
                             margin-bottom: 5px;
                             color: #fff;
+                            font-weight: 500;
                         }
 
                         .guest-detail {
                             font-size: 13px;
                             color: rgba(255, 255, 255, 0.5);
-                            margin-bottom: 15px;
+                            margin-bottom: 20px;
                         }
 
                         .stay-details {
                             display: flex;
                             justify-content: space-between;
-                            margin-bottom: 20px;
+                            margin-bottom: auto;
                             padding: 15px;
                             background: rgba(0, 0, 0, 0.2);
                             border-radius: 8px;
@@ -276,6 +429,7 @@
 
                         .stay-item {
                             text-align: center;
+                            flex: 1;
                         }
 
                         .stay-label {
@@ -284,17 +438,20 @@
                             text-transform: uppercase;
                             color: rgba(255, 255, 255, 0.4);
                             margin-bottom: 5px;
+                            letter-spacing: 1px;
                         }
 
                         .stay-value {
                             font-size: 14px;
                             color: #fff;
+                            font-weight: 500;
                         }
 
                         .card-footer {
                             padding: 20px;
                             border-top: 1px solid rgba(255, 255, 255, 0.05);
                             text-align: center;
+                            flex-shrink: 0;
                         }
 
                         .btn-generate {
@@ -339,65 +496,110 @@
 
                         @media (max-width: 768px) {
                             .sidebar {
-                                width: 80px;
-                                padding: 30px 15px;
+                                transform: translateX(-100%);
+                            }
+
+                            .sidebar.mobile-open {
+                                transform: translateX(0);
                             }
 
                             .main-content {
-                                margin-left: 80px;
-                            }
-
-                            .top-nav {
-                                left: 80px;
-                                padding: 20px 30px;
-                            }
-
-                            .nav-menu {
-                                display: none;
+                                margin-left: 0;
                             }
 
                             .reservation-container {
-                                padding: 120px 30px 60px;
+                                padding: 20px;
                             }
 
                             .page-title {
-                                font-size: 42px;
+                                font-size: 32px;
+                            }
+
+                            .bill-grid {
+                                grid-template-columns: 1fr;
                             }
                         }
                     </style>
                 </head>
 
                 <body>
-                    <div class="sidebar">
-                        <div>
+                    <!-- Sidebar -->
+                    <aside class="sidebar" id="sidebar">
+                        <div class="sidebar-header">
                             <div class="logo">ocean<span>.view</span></div>
-                            <div class="section-number">06</div>
-                            <div class="nav-dots">
-                                <div class="dot active"></div>
-                                <div class="dot"></div>
-                                <div class="dot"></div>
-                            </div>
+                            <div class="logo-subtitle">Resort Management</div>
                         </div>
-                        <div class="social-links">
-                            <a href="#">fb</a>
-                            <a href="#">tw</a>
-                            <a href="#">in</a>
-                            <a href="#">ig</a>
-                        </div>
-                    </div>
 
-                    <div class="main-content">
-                        <nav class="top-nav">
-                            <div class="location">📍 Galle, Sri Lanka</div>
-                            <ul class="nav-menu">
-                                <li><a href="${pageContext.request.contextPath}/index.jsp">Home</a></li>
-                                <li><a href="${pageContext.request.contextPath}/reservation-servlet">Reservations</a>
-                                </li>
-                                <li><a href="#" class="active">Billing</a></li>
-                                <li><a href="#contact">Contact</a></li>
-                            </ul>
+                        <nav class="sidebar-menu">
+                            <div class="menu-section">
+                                <div class="menu-title">Main Menu</div>
+                                <a href="${pageContext.request.contextPath}/Dashboard/StaffDashboard.jsp" class="menu-item">
+                                    <span class="menu-icon">📊</span>
+                                    <span>Dashboard</span>
+                                </a>
+                                <a href="${pageContext.request.contextPath}/reservation-servlet" class="menu-item">
+                                    <span class="menu-icon">📅</span>
+                                    <span>Reservations</span>
+                                </a>
+                                <a href="${pageContext.request.contextPath}/Reservation/CreateReservation.jsp" class="menu-item">
+                                    <span class="menu-icon">➕</span>
+                                    <span>New Reservation</span>
+                                </a>
+                                <a href="${pageContext.request.contextPath}/user-servlet?action=list" class="menu-item">
+                                    <span class="menu-icon">👥</span>
+                                    <span>Guests</span>
+                                </a>
+                                <a href="${pageContext.request.contextPath}/room-servlet?action=list" class="menu-item">
+                                    <span class="menu-icon">🛏️</span>
+                                    <span>Rooms</span>
+                                </a>
+                            </div>
+
+                            <div class="menu-section">
+                                <div class="menu-title">Reports & Billing</div>
+                                <a href="${pageContext.request.contextPath}/bill-servlet" class="menu-item active">
+                                    <span class="menu-icon">💰</span>
+                                    <span>Billing</span>
+                                </a>
+                                <a href="reports.jsp" class="menu-item">
+                                    <span class="menu-icon">📈</span>
+                                    <span>Reports</span>
+                                </a>
+                            </div>
+
+                            <% if ("STAFF".equals(role)) { %>
+                            <div class="menu-section">
+                                <div class="menu-title">Administration</div>
+                                <a href="users.jsp" class="menu-item">
+                                    <span class="menu-icon">👔</span>
+                                    <span>User Management</span>
+                                </a>
+                                <a href="settings.jsp" class="menu-item">
+                                    <span class="menu-icon">⚙️</span>
+                                    <span>Settings</span>
+                                </a>
+                            </div>
+                            <% } %>
                         </nav>
 
+                        <div class="sidebar-footer">
+                            <div class="user-info">
+                                <div class="user-avatar">
+                                    <%= username != null ? username.substring(0, 1).toUpperCase() : "U" %>
+                                </div>
+                                <div class="user-details">
+                                    <div class="user-name"><%= username %></div>
+                                    <div class="user-role"><%= role %></div>
+                                </div>
+                            </div>
+                            <form action="${pageContext.request.contextPath}/LogoutServlet" method="post" style="margin: 0;">
+                                <button type="submit" class="logout-btn">🚪 Logout</button>
+                            </form>
+                        </div>
+                    </aside>
+
+                    <!-- Main Content -->
+                    <main class="main-content">
                         <div class="reservation-container">
                             <div class="page-header">
                                 <div class="page-label">Billing Management</div>
@@ -491,7 +693,7 @@
                                                     <% } %>
                                     </div>
                         </div>
-                    </div>
+                    </main>
                 </body>
 
                 </html>

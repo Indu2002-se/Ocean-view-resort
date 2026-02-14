@@ -1,4 +1,12 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<% 
+    String username = (String) session.getAttribute("username");
+    String role = (String) session.getAttribute("role");
+    if (username == null) {
+        response.sendRedirect(request.getContextPath() + "/Auth/Login.jsp");
+        return;
+    }
+%>
     <!DOCTYPE html>
     <html lang="en">
 
@@ -14,24 +22,29 @@
             }
 
             body {
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                font-family: 'Poppins', 'Segoe UI', sans-serif;
                 background: #1a1a1a;
                 color: #fff;
                 overflow-x: hidden;
             }
 
+            /* Sidebar Navigation */
             .sidebar {
                 position: fixed;
                 left: 0;
                 top: 0;
-                width: 140px;
+                width: 260px;
                 height: 100vh;
                 background: #0d0d0d;
+                border-right: 1px solid rgba(255, 255, 255, 0.05);
                 z-index: 1000;
-                padding: 40px 20px;
                 display: flex;
                 flex-direction: column;
-                justify-content: space-between;
+            }
+
+            .sidebar-header {
+                padding: 30px 25px;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             }
 
             .logo {
@@ -40,123 +53,142 @@
                 color: #fff;
                 letter-spacing: 1px;
                 text-transform: lowercase;
+                margin-bottom: 5px;
             }
 
             .logo span {
                 color: #c9a55c;
             }
 
-            .section-number {
-                font-size: 64px;
-                font-weight: 300;
-                color: rgba(255, 255, 255, 0.1);
-                line-height: 1;
-                margin-top: 30px;
+            .logo-subtitle {
+                font-size: 10px;
+                letter-spacing: 2px;
+                text-transform: uppercase;
+                color: rgba(255, 255, 255, 0.4);
             }
 
-            .nav-dots {
+            .sidebar-menu {
+                flex: 1;
+                padding: 20px 0;
+                overflow-y: auto;
+            }
+
+            .menu-section {
+                margin-bottom: 30px;
+            }
+
+            .menu-title {
+                font-size: 10px;
+                letter-spacing: 2px;
+                text-transform: uppercase;
+                color: rgba(255, 255, 255, 0.4);
+                padding: 0 25px;
+                margin-bottom: 10px;
+            }
+
+            .menu-item {
                 display: flex;
-                flex-direction: column;
+                align-items: center;
                 gap: 15px;
-                margin-top: 50px;
+                padding: 14px 25px;
+                color: rgba(255, 255, 255, 0.7);
+                text-decoration: none;
+                transition: all 0.3s;
+                font-size: 13px;
+                border-left: 3px solid transparent;
             }
 
-            .dot {
-                width: 8px;
-                height: 8px;
+            .menu-item:hover {
+                background: rgba(255, 255, 255, 0.05);
+                color: #c9a55c;
+                border-left-color: #c9a55c;
+            }
+
+            .menu-item.active {
+                background: rgba(201, 165, 92, 0.1);
+                color: #c9a55c;
+                border-left-color: #c9a55c;
+            }
+
+            .menu-icon {
+                font-size: 18px;
+                width: 20px;
+                text-align: center;
+            }
+
+            .sidebar-footer {
+                padding: 20px 25px;
+                border-top: 1px solid rgba(255, 255, 255, 0.05);
+            }
+
+            .user-info {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                margin-bottom: 15px;
+            }
+
+            .user-avatar {
+                width: 40px;
+                height: 40px;
                 border-radius: 50%;
-                background: rgba(255, 255, 255, 0.3);
+                background: linear-gradient(135deg, #c9a55c, #f4e5c3);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: 600;
+                color: #1a1a1a;
+            }
+
+            .user-details {
+                flex: 1;
+            }
+
+            .user-name {
+                font-size: 13px;
+                font-weight: 600;
+                margin-bottom: 2px;
+            }
+
+            .user-role {
+                font-size: 10px;
+                letter-spacing: 1px;
+                text-transform: uppercase;
+                color: rgba(255, 255, 255, 0.4);
+            }
+
+            .logout-btn {
+                width: 100%;
+                padding: 10px;
+                background: rgba(255, 255, 255, 0.05);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                border-radius: 6px;
+                color: rgba(255, 255, 255, 0.7);
+                font-size: 11px;
+                letter-spacing: 1px;
+                text-transform: uppercase;
                 cursor: pointer;
                 transition: all 0.3s;
             }
 
-            .dot.active {
-                background: #c9a55c;
-                transform: scale(1.4);
+            .logout-btn:hover {
+                background: rgba(220, 53, 69, 0.1);
+                border-color: rgba(220, 53, 69, 0.3);
+                color: #ff6b6b;
             }
 
-            .social-links {
-                display: flex;
-                flex-direction: column;
-                gap: 20px;
-                margin-bottom: 30px;
-            }
-
-            .social-links a {
-                color: rgba(255, 255, 255, 0.5);
-                font-size: 18px;
-                transition: all 0.3s;
-                text-decoration: none;
-            }
-
-            .social-links a:hover {
-                color: #c9a55c;
-            }
-
+            /* Main Content */
             .main-content {
-                margin-left: 140px;
+                margin-left: 260px;
+                min-height: 100vh;
             }
 
             .top-nav {
-                position: fixed;
-                top: 0;
-                right: 0;
-                left: 140px;
-                background: rgba(13, 13, 13, 0.95);
-                backdrop-filter: blur(10px);
-                padding: 30px 80px;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                z-index: 999;
-                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            }
-
-            .location {
-                color: rgba(255, 255, 255, 0.6);
-                font-size: 12px;
-                letter-spacing: 2px;
-                text-transform: uppercase;
-            }
-
-            .nav-menu {
-                display: flex;
-                gap: 50px;
-                list-style: none;
-            }
-
-            .nav-menu a {
-                color: rgba(255, 255, 255, 0.7);
-                text-decoration: none;
-                font-size: 13px;
-                letter-spacing: 2px;
-                text-transform: uppercase;
-                transition: all 0.3s;
-                position: relative;
-            }
-
-            .nav-menu a:hover,
-            .nav-menu a.active {
-                color: #c9a55c;
-            }
-
-            .nav-menu a::after {
-                content: '';
-                position: absolute;
-                bottom: -5px;
-                left: 0;
-                width: 0;
-                height: 1px;
-                background: #c9a55c;
-                transition: width 0.3s;
-            }
-
-            .nav-menu a:hover::after {
-                width: 100%;
+                display: none;
             }
 
             .reservation-container {
-                padding: 150px 80px 80px;
+                padding: 40px;
                 max-width: 1400px;
                 margin: 0 auto;
             }
@@ -176,19 +208,19 @@
             }
 
             .page-title {
-                font-size: 72px;
+                font-size: 48px;
                 font-weight: 300;
-                letter-spacing: 8px;
+                letter-spacing: 4px;
                 text-transform: uppercase;
-                margin-bottom: 30px;
+                margin-bottom: 20px;
                 line-height: 1.2;
             }
 
             .page-description {
-                font-size: 15px;
+                font-size: 14px;
                 line-height: 1.8;
                 color: rgba(255, 255, 255, 0.7);
-                max-width: 700px;
+                max-width: 600px;
                 margin: 0 auto;
                 font-weight: 300;
             }
@@ -716,37 +748,83 @@
                 window.history.replaceState({}, document.title, url);
             }
         </script>
-        <div class="sidebar">
-            <div>
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
                 <div class="logo">ocean<span>.view</span></div>
-                <div class="section-number">04</div>
-                <div class="nav-dots">
-                    <div class="dot"></div>
-                    <div class="dot"></div>
-                    <div class="dot"></div>
-                    <div class="dot active"></div>
-                </div>
+                <div class="logo-subtitle">Resort Management</div>
             </div>
-            <div class="social-links">
-                <a href="#">fb</a>
-                <a href="#">tw</a>
-                <a href="#">in</a>
-                <a href="#">ig</a>
-            </div>
-        </div>
 
-        <div class="main-content">
-            <nav class="top-nav">
-                <div class="location">📍 Galle, Sri Lanka</div>
-                <ul class="nav-menu">
-                    <li><a href="index.jsp">Home</a></li>
-                    <li><a href="#about">About Us</a></li>
-                    <li><a href="#rooms">Rooms</a></li>
-                    <li><a href="#" class="active">Reservation</a></li>
-                    <li><a href="#contact">Contact</a></li>
-                </ul>
+            <nav class="sidebar-menu">
+                <div class="menu-section">
+                    <div class="menu-title">Main Menu</div>
+                    <a href="${pageContext.request.contextPath}/Dashboard/StaffDashboard.jsp" class="menu-item">
+                        <span class="menu-icon">📊</span>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="${pageContext.request.contextPath}/reservation-servlet" class="menu-item">
+                        <span class="menu-icon">📅</span>
+                        <span>Reservations</span>
+                    </a>
+                    <a href="${pageContext.request.contextPath}/Reservation/CreateReservation.jsp" class="menu-item active">
+                        <span class="menu-icon">➕</span>
+                        <span>New Reservation</span>
+                    </a>
+                    <a href="${pageContext.request.contextPath}/user-servlet?action=list" class="menu-item">
+                        <span class="menu-icon">👥</span>
+                        <span>Guests</span>
+                    </a>
+                    <a href="${pageContext.request.contextPath}/room-servlet?action=list" class="menu-item">
+                        <span class="menu-icon">🛏️</span>
+                        <span>Rooms</span>
+                    </a>
+                </div>
+
+                <div class="menu-section">
+                    <div class="menu-title">Reports & Billing</div>
+                    <a href="${pageContext.request.contextPath}/bill-servlet" class="menu-item">
+                        <span class="menu-icon">💰</span>
+                        <span>Billing</span>
+                    </a>
+                    <a href="reports.jsp" class="menu-item">
+                        <span class="menu-icon">📈</span>
+                        <span>Reports</span>
+                    </a>
+                </div>
+
+                <% if ("STAFF".equals(role)) { %>
+                <div class="menu-section">
+                    <div class="menu-title">Administration</div>
+                    <a href="users.jsp" class="menu-item">
+                        <span class="menu-icon">👔</span>
+                        <span>User Management</span>
+                    </a>
+                    <a href="settings.jsp" class="menu-item">
+                        <span class="menu-icon">⚙️</span>
+                        <span>Settings</span>
+                    </a>
+                </div>
+                <% } %>
             </nav>
 
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar">
+                        <%= username != null ? username.substring(0, 1).toUpperCase() : "U" %>
+                    </div>
+                    <div class="user-details">
+                        <div class="user-name"><%= username %></div>
+                        <div class="user-role"><%= role %></div>
+                    </div>
+                </div>
+                <form action="${pageContext.request.contextPath}/LogoutServlet" method="post" style="margin: 0;">
+                    <button type="submit" class="logout-btn">🚪 Logout</button>
+                </form>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
             <div class="reservation-container">
                 <div class="page-header">
                     <div class="page-label">Book Your Stay</div>
@@ -948,7 +1026,7 @@
                                     </div>
                                 </div>
             </div>
-        </div>
+        </main>
 
         <script>
             // Generate random reservation number on page load
