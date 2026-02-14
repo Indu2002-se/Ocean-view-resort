@@ -1,0 +1,1037 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+    <!DOCTYPE html>
+    <html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Make Reservation - Ocean View Resort</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                background: #1a1a1a;
+                color: #fff;
+                overflow-x: hidden;
+            }
+
+            .sidebar {
+                position: fixed;
+                left: 0;
+                top: 0;
+                width: 140px;
+                height: 100vh;
+                background: #0d0d0d;
+                z-index: 1000;
+                padding: 40px 20px;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+            }
+
+            .logo {
+                font-size: 24px;
+                font-weight: 700;
+                color: #fff;
+                letter-spacing: 1px;
+                text-transform: lowercase;
+            }
+
+            .logo span {
+                color: #c9a55c;
+            }
+
+            .section-number {
+                font-size: 64px;
+                font-weight: 300;
+                color: rgba(255, 255, 255, 0.1);
+                line-height: 1;
+                margin-top: 30px;
+            }
+
+            .nav-dots {
+                display: flex;
+                flex-direction: column;
+                gap: 15px;
+                margin-top: 50px;
+            }
+
+            .dot {
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.3);
+                cursor: pointer;
+                transition: all 0.3s;
+            }
+
+            .dot.active {
+                background: #c9a55c;
+                transform: scale(1.4);
+            }
+
+            .social-links {
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+                margin-bottom: 30px;
+            }
+
+            .social-links a {
+                color: rgba(255, 255, 255, 0.5);
+                font-size: 18px;
+                transition: all 0.3s;
+                text-decoration: none;
+            }
+
+            .social-links a:hover {
+                color: #c9a55c;
+            }
+
+            .main-content {
+                margin-left: 140px;
+            }
+
+            .top-nav {
+                position: fixed;
+                top: 0;
+                right: 0;
+                left: 140px;
+                background: rgba(13, 13, 13, 0.95);
+                backdrop-filter: blur(10px);
+                padding: 30px 80px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                z-index: 999;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            }
+
+            .location {
+                color: rgba(255, 255, 255, 0.6);
+                font-size: 12px;
+                letter-spacing: 2px;
+                text-transform: uppercase;
+            }
+
+            .nav-menu {
+                display: flex;
+                gap: 50px;
+                list-style: none;
+            }
+
+            .nav-menu a {
+                color: rgba(255, 255, 255, 0.7);
+                text-decoration: none;
+                font-size: 13px;
+                letter-spacing: 2px;
+                text-transform: uppercase;
+                transition: all 0.3s;
+                position: relative;
+            }
+
+            .nav-menu a:hover,
+            .nav-menu a.active {
+                color: #c9a55c;
+            }
+
+            .nav-menu a::after {
+                content: '';
+                position: absolute;
+                bottom: -5px;
+                left: 0;
+                width: 0;
+                height: 1px;
+                background: #c9a55c;
+                transition: width 0.3s;
+            }
+
+            .nav-menu a:hover::after {
+                width: 100%;
+            }
+
+            .reservation-container {
+                padding: 150px 80px 80px;
+                max-width: 1400px;
+                margin: 0 auto;
+            }
+
+            .page-header {
+                text-align: center;
+                margin-bottom: 80px;
+            }
+
+            .page-label {
+                font-size: 11px;
+                letter-spacing: 4px;
+                text-transform: uppercase;
+                color: #c9a55c;
+                margin-bottom: 20px;
+                font-weight: 500;
+            }
+
+            .page-title {
+                font-size: 72px;
+                font-weight: 300;
+                letter-spacing: 8px;
+                text-transform: uppercase;
+                margin-bottom: 30px;
+                line-height: 1.2;
+            }
+
+            .page-description {
+                font-size: 15px;
+                line-height: 1.8;
+                color: rgba(255, 255, 255, 0.7);
+                max-width: 700px;
+                margin: 0 auto;
+                font-weight: 300;
+            }
+
+            .reservation-grid {
+                display: grid;
+                grid-template-columns: 1fr 400px;
+                gap: 60px;
+                align-items: start;
+            }
+
+            .form-panel {
+                background: rgba(255, 255, 255, 0.02);
+                border: 1px solid rgba(255, 255, 255, 0.05);
+                border-radius: 8px;
+                padding: 50px;
+            }
+
+            .section-title {
+                font-size: 24px;
+                font-weight: 400;
+                letter-spacing: 2px;
+                text-transform: uppercase;
+                margin-bottom: 40px;
+                color: #c9a55c;
+                position: relative;
+                padding-bottom: 15px;
+            }
+
+            .section-title::after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 60px;
+                height: 2px;
+                background: #c9a55c;
+            }
+
+            .form-grid {
+                display: grid;
+                gap: 30px;
+            }
+
+            .form-row {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 30px;
+            }
+
+            .form-group {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .form-group.full-width {
+                grid-column: 1 / -1;
+            }
+
+            .form-label {
+                font-size: 11px;
+                letter-spacing: 2px;
+                text-transform: uppercase;
+                color: rgba(255, 255, 255, 0.5);
+                margin-bottom: 12px;
+                font-weight: 500;
+            }
+
+            .form-label span {
+                color: #c9a55c;
+            }
+
+            .form-input,
+            .form-select,
+            .form-textarea {
+                background: rgba(255, 255, 255, 0.03);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                padding: 18px 20px;
+                color: #fff;
+                font-size: 14px;
+                border-radius: 4px;
+                transition: all 0.3s;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
+
+            .form-input:focus,
+            .form-select:focus,
+            .form-textarea:focus {
+                outline: none;
+                border-color: #c9a55c;
+                background: rgba(201, 165, 92, 0.05);
+                box-shadow: 0 0 0 3px rgba(201, 165, 92, 0.1);
+            }
+
+            .form-input::placeholder {
+                color: rgba(255, 255, 255, 0.3);
+            }
+
+            .form-textarea {
+                resize: vertical;
+                min-height: 120px;
+            }
+
+            .form-select {
+                cursor: pointer;
+                appearance: none;
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23c9a55c' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+                background-repeat: no-repeat;
+                background-position: right 15px center;
+                padding-right: 40px;
+            }
+
+            .form-actions {
+                display: flex;
+                gap: 20px;
+                margin-top: 40px;
+            }
+
+            .btn {
+                padding: 18px 50px;
+                font-size: 12px;
+                letter-spacing: 2px;
+                text-transform: uppercase;
+                border: none;
+                border-radius: 30px;
+                cursor: pointer;
+                transition: all 0.3s;
+                font-weight: 600;
+                flex: 1;
+            }
+
+            .btn-primary {
+                background: #c9a55c;
+                color: #1a1a1a;
+                box-shadow: 0 10px 30px rgba(201, 165, 92, 0.3);
+            }
+
+            .btn-primary:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 15px 40px rgba(201, 165, 92, 0.5);
+            }
+
+            .btn-secondary {
+                background: transparent;
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                color: rgba(255, 255, 255, 0.7);
+            }
+
+            .btn-secondary:hover {
+                background: rgba(255, 255, 255, 0.05);
+                color: #fff;
+                border-color: rgba(255, 255, 255, 0.4);
+            }
+
+            .summary-panel {
+                position: sticky;
+                top: 120px;
+                background: rgba(255, 255, 255, 0.02);
+                border: 1px solid rgba(255, 255, 255, 0.05);
+                border-radius: 8px;
+                padding: 40px;
+            }
+
+            .summary-title {
+                font-size: 20px;
+                font-weight: 400;
+                letter-spacing: 2px;
+                text-transform: uppercase;
+                margin-bottom: 30px;
+                color: #c9a55c;
+            }
+
+            .summary-item {
+                display: flex;
+                justify-content: space-between;
+                padding: 18px 0;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            }
+
+            .summary-item:last-child {
+                border-bottom: none;
+            }
+
+            .summary-label {
+                font-size: 12px;
+                letter-spacing: 1px;
+                text-transform: uppercase;
+                color: rgba(255, 255, 255, 0.6);
+            }
+
+            .summary-value {
+                font-size: 14px;
+                color: #fff;
+                font-weight: 500;
+            }
+
+            .summary-total {
+                margin-top: 30px;
+                padding: 25px;
+                background: rgba(201, 165, 92, 0.1);
+                border-radius: 6px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .total-label {
+                font-size: 14px;
+                letter-spacing: 2px;
+                text-transform: uppercase;
+                color: #c9a55c;
+            }
+
+            .total-amount {
+                font-size: 36px;
+                font-weight: 600;
+                color: #c9a55c;
+            }
+
+            .info-box {
+                margin-top: 30px;
+                padding: 20px;
+                background: rgba(201, 165, 92, 0.05);
+                border-left: 3px solid #c9a55c;
+                border-radius: 4px;
+            }
+
+            .info-box p {
+                font-size: 12px;
+                line-height: 1.8;
+                color: rgba(255, 255, 255, 0.7);
+            }
+
+            .alert {
+                padding: 18px 25px;
+                border-radius: 6px;
+                margin-bottom: 30px;
+                font-size: 13px;
+                letter-spacing: 1px;
+                display: flex;
+                align-items: center;
+                gap: 15px;
+            }
+
+            .alert-success {
+                background: rgba(40, 167, 69, 0.1);
+                border: 1px solid rgba(40, 167, 69, 0.3);
+                color: #28a745;
+            }
+
+            .alert-error {
+                background: rgba(220, 53, 69, 0.1);
+                border: 1px solid rgba(220, 53, 69, 0.3);
+                color: #dc3545;
+            }
+
+            .room-preview {
+                margin-top: 30px;
+                border-radius: 8px;
+                overflow: hidden;
+            }
+
+            .room-image {
+                width: 100%;
+                height: 200px;
+                background-size: cover;
+                background-position: center;
+                position: relative;
+            }
+
+            .room-badge {
+                position: absolute;
+                top: 15px;
+                right: 15px;
+                padding: 8px 20px;
+                background: rgba(201, 165, 92, 0.95);
+                color: #1a1a1a;
+                font-size: 10px;
+                letter-spacing: 2px;
+                text-transform: uppercase;
+                font-weight: 600;
+                border-radius: 20px;
+            }
+
+            .room-details {
+                padding: 20px;
+                background: rgba(255, 255, 255, 0.03);
+            }
+
+            .room-name {
+                font-size: 16px;
+                font-weight: 500;
+                margin-bottom: 10px;
+                color: #c9a55c;
+            }
+
+            .room-features {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            .feature-tag {
+                padding: 4px 10px;
+                background: rgba(255, 255, 255, 0.05);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                border-radius: 12px;
+                font-size: 9px;
+                letter-spacing: 1px;
+                text-transform: uppercase;
+            }
+
+            .hidden {
+                display: none;
+            }
+
+            @media (max-width: 1200px) {
+                .reservation-grid {
+                    grid-template-columns: 1fr;
+                }
+
+                .summary-panel {
+                    position: relative;
+                    top: 0;
+                }
+            }
+
+            @media (max-width: 768px) {
+                .sidebar {
+                    width: 80px;
+                    padding: 30px 15px;
+                }
+
+                .main-content {
+                    margin-left: 80px;
+                }
+
+                .top-nav {
+                    left: 80px;
+                    padding: 20px 30px;
+                }
+
+                .nav-menu {
+                    display: none;
+                }
+
+                .reservation-container {
+                    padding: 120px 30px 60px;
+                }
+
+                .page-title {
+                    font-size: 42px;
+                }
+
+                .form-panel,
+                .summary-panel {
+                    padding: 30px 20px;
+                }
+
+                .form-row {
+                    grid-template-columns: 1fr;
+                }
+
+                .form-actions {
+                    flex-direction: column;
+                }
+            }
+
+            /* Loading Spinner */
+            .spinner {
+                border: 3px solid rgba(255, 255, 255, 0.1);
+                border-top: 3px solid #c9a55c;
+                border-radius: 50%;
+                width: 40px;
+                height: 40px;
+                animation: spin 1s linear infinite;
+                margin: 0 auto;
+            }
+
+            @keyframes spin {
+                0% {
+                    transform: rotate(0deg);
+                }
+
+                100% {
+                    transform: rotate(360deg);
+                }
+            }
+
+            .loading-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.8);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 9999;
+            }
+
+            .loading-content {
+                text-align: center;
+            }
+
+            .loading-text {
+                margin-top: 20px;
+                font-size: 14px;
+                letter-spacing: 2px;
+                text-transform: uppercase;
+                color: #c9a55c;
+            }
+
+            /* Modal Styles */
+            .modal-overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.8);
+                backdrop-filter: blur(5px);
+                z-index: 2000;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .modal-card {
+                background: #1a1a1a;
+                border: 1px solid #c9a55c;
+                padding: 40px;
+                border-radius: 15px;
+                text-align: center;
+                max-width: 400px;
+                width: 90%;
+                box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+                animation: slideIn 0.3s ease-out;
+            }
+
+            @keyframes slideIn {
+                from {
+                    transform: translateY(50px);
+                    opacity: 0;
+                }
+
+                to {
+                    transform: translateY(0);
+                    opacity: 1;
+                }
+            }
+
+            .modal-icon {
+                font-size: 48px;
+                color: #c9a55c;
+                margin-bottom: 20px;
+            }
+
+            .modal-title {
+                font-size: 24px;
+                color: #fff;
+                margin-bottom: 10px;
+                text-transform: uppercase;
+                letter-spacing: 2px;
+            }
+
+            .modal-message {
+                color: rgba(255, 255, 255, 0.7);
+                margin-bottom: 30px;
+                line-height: 1.6;
+            }
+
+            .modal-actions {
+                display: flex;
+                gap: 15px;
+                justify-content: center;
+            }
+
+            .btn-close-modal {
+                background: transparent;
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                color: #fff;
+                padding: 12px 25px;
+                border-radius: 25px;
+                cursor: pointer;
+                transition: all 0.3s;
+            }
+
+            .btn-close-modal:hover {
+                background: rgba(255, 255, 255, 0.1);
+            }
+        </style>
+    </head>
+
+    <body>
+        <div id="successModal" class="modal-overlay">
+            <div class="modal-card">
+                <div class="modal-icon">✨</div>
+                <h3 class="modal-title">Reservation Successful!</h3>
+                <p class="modal-message">Your reservation has been successfully created and confirmed.</p>
+                <div class="modal-actions">
+                    <button onclick="closeModal()" class="btn-close-modal">Close</button>
+                    <a href="${pageContext.request.contextPath}/bill-servlet" class="btn btn-primary"
+                        id="generateBillBtn">
+                        Generate Bill
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            // Check for success status
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('status') === 'success') {
+                document.getElementById('successModal').style.display = 'flex';
+            }
+
+            function closeModal() {
+                document.getElementById('successModal').style.display = 'none';
+                // Clean URL
+                const url = new URL(window.location);
+                url.searchParams.delete('status');
+                url.searchParams.delete('reservationNo');
+                window.history.replaceState({}, document.title, url);
+            }
+        </script>
+        <div class="sidebar">
+            <div>
+                <div class="logo">ocean<span>.view</span></div>
+                <div class="section-number">04</div>
+                <div class="nav-dots">
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot active"></div>
+                </div>
+            </div>
+            <div class="social-links">
+                <a href="#">fb</a>
+                <a href="#">tw</a>
+                <a href="#">in</a>
+                <a href="#">ig</a>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <nav class="top-nav">
+                <div class="location">📍 Galle, Sri Lanka</div>
+                <ul class="nav-menu">
+                    <li><a href="index.jsp">Home</a></li>
+                    <li><a href="#about">About Us</a></li>
+                    <li><a href="#rooms">Rooms</a></li>
+                    <li><a href="#" class="active">Reservation</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+
+            <div class="reservation-container">
+                <div class="page-header">
+                    <div class="page-label">Book Your Stay</div>
+                    <h1 class="page-title">Make Your<br>Reservation</h1>
+                    <p class="page-description">
+                        Experience luxury and comfort at Ocean View Resort.
+                        Fill in your details below to secure your perfect beachside escape.
+                    </p>
+                </div>
+
+                <!-- Display Error Messages -->
+                <% String error=request.getParameter("error"); String message=request.getParameter("message"); if
+                    ("validation".equals(error) && message !=null) { %>
+                    <div class="alert alert-error">
+                        ⚠️ Validation Error: <%= message %>
+                    </div>
+                    <% } else if ("true".equals(error)) { %>
+                        <div class="alert alert-error">
+                            ⚠️ Failed to create reservation. Please try again.
+                        </div>
+                        <% } else if ("exception".equals(error)) { %>
+                            <div class="alert alert-error">
+                                ⚠️ An unexpected error occurred. Please check your input and try again.
+                            </div>
+                            <% } %>
+
+                                <div class="reservation-grid">
+                                    <div class="form-panel">
+                                        <h2 class="section-title">Guest Information</h2>
+
+                                        <form action="${pageContext.request.contextPath}/reservation-servlet"
+                                            method="POST" id="reservationForm" onsubmit="return validateForm()">
+                                            <div class="form-grid">
+                                                <!-- Reservation Number (Auto-generated) -->
+                                                <div class="form-group">
+                                                    <label class="form-label">Reservation Number</label>
+                                                    <input type="text" name="reservationNo" class="form-input" value=""
+                                                        readonly
+                                                        style="background: rgba(201,165,92,0.1); color: #c9a55c; font-weight: 600;">
+                                                </div>
+
+                                                <!-- Guest Name -->
+                                                <div class="form-group">
+                                                    <label class="form-label">Guest Name <span>*</span></label>
+                                                    <input type="text" name="guestName" class="form-input"
+                                                        placeholder="Enter your full name" required>
+                                                </div>
+
+                                                <!-- Guest Email -->
+                                                <div class="form-row">
+                                                    <div class="form-group">
+                                                        <label class="form-label">Email Address <span>*</span></label>
+                                                        <input type="email" name="guestEmail" class="form-input"
+                                                            placeholder="your.email@example.com" required>
+                                                    </div>
+
+                                                    <!-- Phone Number -->
+                                                    <div class="form-group">
+                                                        <label class="form-label">Phone Number <span>*</span></label>
+                                                        <input type="tel" name="phoneNo" class="form-input"
+                                                            placeholder="+94 XX XXX XXXX" required>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Address -->
+                                                <div class="form-group full-width">
+                                                    <label class="form-label">Address</label>
+                                                    <textarea name="address" class="form-textarea"
+                                                        placeholder="Enter your complete address"></textarea>
+                                                </div>
+
+                                                <!-- Room Type -->
+                                                <div class="form-row">
+                                                    <div class="form-group">
+                                                        <label class="form-label">Room Type <span>*</span></label>
+                                                        <select name="room_type_id" class="form-select" id="roomType"
+                                                            required>
+                                                            <option value="">Select Room Category</option>
+                                                            <option value="1" data-price="80" data-name="Standard Room">
+                                                                Standard Room - $80/night</option>
+                                                            <option value="2" data-price="120" data-name="Deluxe Room">
+                                                                Deluxe Room - $120/night</option>
+                                                            <option value="3" data-price="200" data-name="Suite">Suite -
+                                                                $200/night</option>
+                                                            <option value="4" data-price="250"
+                                                                data-name="Ocean View Suite">
+                                                                Ocean View Suite -
+                                                                $250/night</option>
+                                                        </select>
+                                                    </div>
+
+                                                    <!-- Number of Guests -->
+                                                    <div class="form-group">
+                                                        <label class="form-label">Number of Guests
+                                                            <span>*</span></label>
+                                                        <input type="number" name="num_guests" class="form-input"
+                                                            placeholder="1" min="1" max="4" value="1" required>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Check-in Date -->
+                                                <div class="form-row">
+                                                    <div class="form-group">
+                                                        <label class="form-label">Check-in Date <span>*</span></label>
+                                                        <input type="datetime-local" name="checkInDate"
+                                                            class="form-input" id="checkIn" required>
+                                                    </div>
+
+                                                    <!-- Check-out Date -->
+                                                    <div class="form-group">
+                                                        <label class="form-label">Check-out Date <span>*</span></label>
+                                                        <input type="datetime-local" name="checkOutDate"
+                                                            class="form-input" id="checkOut" required>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Special Requests -->
+                                                <div class="form-group full-width">
+                                                    <label class="form-label">Special Requests (Optional)</label>
+                                                    <textarea name="special_requests" class="form-textarea"
+                                                        placeholder="Any special requirements or preferences (e.g., dietary needs, room preferences)"></textarea>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-actions">
+                                                <button type="reset" class="btn btn-secondary">Clear Form</button>
+                                                <button type="submit" class="btn btn-primary">Confirm
+                                                    Reservation</button>
+                                            </div>
+                                        </form>
+                                    </div>
+
+                                    <div class="summary-panel">
+                                        <h3 class="summary-title">Booking Summary</h3>
+
+                                        <div class="room-preview hidden" id="roomPreview">
+                                            <div class="room-image" id="roomImage">
+                                                <div class="room-badge">Selected</div>
+                                            </div>
+                                            <div class="room-details">
+                                                <div class="room-name" id="roomName">Select a room</div>
+                                                <div class="room-features">
+                                                    <span class="feature-tag">Free WiFi</span>
+                                                    <span class="feature-tag">AC</span>
+                                                    <span class="feature-tag">TV</span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="summary-item">
+                                            <span class="summary-label">Reservation No.</span>
+                                            <span class="summary-value" id="summaryResNo">Auto-generated</span>
+                                        </div>
+
+                                        <div class="summary-item">
+                                            <span class="summary-label">Guest Name</span>
+                                            <span class="summary-value" id="summaryName">-</span>
+                                        </div>
+
+                                        <div class="summary-item">
+                                            <span class="summary-label">Room Type</span>
+                                            <span class="summary-value" id="summaryRoom">Not selected</span>
+                                        </div>
+
+                                        <div class="summary-item">
+                                            <span class="summary-label">Check-in</span>
+                                            <span class="summary-value" id="summaryCheckIn">-</span>
+                                        </div>
+
+                                        <div class="summary-item">
+                                            <span class="summary-label">Check-out</span>
+                                            <span class="summary-value" id="summaryCheckOut">-</span>
+                                        </div>
+
+                                        <div class="summary-item">
+                                            <span class="summary-label">Number of Nights</span>
+                                            <span class="summary-value" id="summaryNights">0</span>
+                                        </div>
+
+                                        <div class="summary-item">
+                                            <span class="summary-label">Rate per Night</span>
+                                            <span class="summary-value" id="summaryRate">$0</span>
+                                        </div>
+
+                                        <div class="summary-total">
+                                            <span class="total-label">Total Amount</span>
+                                            <span class="total-amount" id="totalAmount">$0</span>
+                                        </div>
+
+                                        <div class="info-box">
+                                            <p>
+                                                <strong>Important:</strong><br>
+                                                • Check-in time: 2:00 PM (14:00)<br>
+                                                • Check-out time: 12:00 PM (12:00)<br>
+                                                • Cancellation policy applies<br>
+                                                • Valid ID required at check-in
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+            </div>
+        </div>
+
+        <script>
+            // Generate random reservation number on page load
+            function generateReservationNumber() {
+                const resNo = 'RES' + Date.now().toString().slice(-8);
+                document.querySelector('input[name="reservationNo"]').value = resNo;
+                document.getElementById('summaryResNo').textContent = resNo;
+            }
+
+            window.addEventListener('load', generateReservationNumber);
+
+            // Room images mapping
+            const roomImages = {
+                '1': 'https://images.unsplash.com/photo-1590490360182-c33d57733427?w=600',
+                '2': 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=600',
+                '3': 'https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=600',
+                '4': 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=600'
+            };
+
+            // Update room preview
+            document.getElementById('roomType').addEventListener('change', function () {
+                const selectedOption = this.options[this.selectedIndex];
+                const roomName = selectedOption.getAttribute('data-name');
+                const roomPrice = selectedOption.getAttribute('data-price');
+                const roomId = selectedOption.value;
+
+                if (roomId) {
+                    document.getElementById('roomPreview').classList.remove('hidden');
+                    document.getElementById('roomName').textContent = roomName;
+                    document.getElementById('roomImage').style.backgroundImage = `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.5)), url('${roomImages[roomId]}')`;
+                    document.getElementById('summaryRoom').textContent = roomName;
+                    document.getElementById('summaryRate').textContent = '$' + roomPrice;
+                    calculateTotal();
+                } else {
+                    document.getElementById('roomPreview').classList.add('hidden');
+                    document.getElementById('summaryRoom').textContent = 'Not selected';
+                    document.getElementById('summaryRate').textContent = '$0';
+                    document.getElementById('totalAmount').textContent = '$0';
+                }
+            });
+
+            // Update guest name in summary
+            document.querySelector('input[name="guestName"]').addEventListener('input', function () {
+                document.getElementById('summaryName').textContent = this.value || '-';
+            });
+
+            // Update check-in date in summary
+            document.getElementById('checkIn').addEventListener('change', function () {
+                const date = new Date(this.value);
+                document.getElementById('summaryCheckIn').textContent = date.toLocaleDateString('en-US', {
+                    month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit'
+                });
+                calculateTotal();
+            });
+
+            // Update check-out date in summary
+            document.getElementById('checkOut').addEventListener('change', function () {
+                const date = new Date(this.value);
+                document.getElementById('summaryCheckOut').textContent = date.toLocaleDateString('en-US', {
+                    month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit'
+                });
+                calculateTotal();
+            });
+
+        </script>
+        <script>
+            // Check for success status
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('status') === 'success') {
+                document.getElementById('successModal').style.display = 'flex';
+            }
+
+            function closeModal() {
+                document.getElementById('successModal').style.display = 'none';
+                // Clean URL
+                const url = new URL(window.location);
+                url.searchParams.delete('status');
+                url.searchParams.delete('reservationNo');
+                window.history.replaceState({}, document.title, url);
+            }
+
+            // ... include any other existing scripts here or leave them as is if they were not touched ...
+        </script>
+    </body>
+
+    </html>
