@@ -68,6 +68,14 @@ public class BillService {
         return bill.orElse(null);
     }
 
+    public Reservation getReservationForBill(String reservationNo) {
+        return reservationDAO.getReservationByNo(reservationNo);
+    }
+
+    public java.util.List<Reservation> getAllConfirmedReservations() {
+        return reservationDAO.getAllReservations();
+    }
+
     private double getRoomRate(int roomTypeId) {
         switch (roomTypeId) {
             case 1:
