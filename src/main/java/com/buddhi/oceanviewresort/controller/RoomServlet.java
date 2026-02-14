@@ -67,8 +67,8 @@ public class RoomServlet extends HttpServlet {
     private void listRooms(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         List<Room> rooms = roomService.getAllRooms();
         req.setAttribute("rooms", rooms);
-        // Forwarding to rooms.jsp (assumed location)
-        req.getRequestDispatcher("/Dashboard/rooms.jsp").forward(req, resp);
+        // Forwarding to Room.jsp
+        req.getRequestDispatcher("/Dashboard/Room.jsp").forward(req, resp);
     }
 
     private void showEditForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
