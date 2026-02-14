@@ -3,6 +3,7 @@ package com.buddhi.oceanviewresort.dao;
 import com.buddhi.oceanviewresort.config.DBConnection;
 import com.buddhi.oceanviewresort.model.entity.Room;
 import com.buddhi.oceanviewresort.model.factory.RoomFactory;
+import com.buddhi.oceanviewresort.model.factory.RoomFactoryImpl;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ public class RoomDAO {
     private final RoomFactory roomFactory;
 
     public RoomDAO() {
-        this.roomFactory = new RoomFactory();
+        this.roomFactory = new RoomFactoryImpl();
     }
 
     public boolean addRoom(Room room) {

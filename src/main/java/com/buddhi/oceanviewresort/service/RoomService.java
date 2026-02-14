@@ -3,6 +3,7 @@ package com.buddhi.oceanviewresort.service;
 import com.buddhi.oceanviewresort.dao.RoomDAO;
 import com.buddhi.oceanviewresort.model.entity.Room;
 import com.buddhi.oceanviewresort.model.factory.RoomFactory;
+import com.buddhi.oceanviewresort.model.factory.RoomFactoryImpl;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ public class RoomService {
     public RoomService() {
         // Instantiate dependencies directly (no singleton)
         this.roomDAO = new RoomDAO();
-        this.roomFactory = new RoomFactory();
+        this.roomFactory = new RoomFactoryImpl();
     }
 
     public List<Room> getAllRooms() {
