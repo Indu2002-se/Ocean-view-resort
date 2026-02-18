@@ -3,8 +3,7 @@
     <%@ page contentType="text/html;charset=UTF-8" language="java" %>
         <%@ page import="java.util.*" %>
             <% // Check if user is logged in
-          String username=(String) session.getAttribute("username");
-          String
+                String  username=(String) session.getAttribute("username"); String
                 role=(String) session.getAttribute("role"); if (username==null) { response.sendRedirect("login.jsp");
                 return; } %>
                 <!DOCTYPE html>
@@ -621,7 +620,7 @@
                                     <span class="menu-icon">💰</span>
                                     <span>Billing</span>
                                 </a>
-                                <a href="reports.jsp" class="menu-item">
+                                <a href="${pageContext.request.contextPath}/report-servlet" class="menu-item">
                                     <span class="menu-icon">📈</span>
                                     <span>Reports</span>
                                 </a>

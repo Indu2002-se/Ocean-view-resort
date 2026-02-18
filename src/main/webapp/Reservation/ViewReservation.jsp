@@ -726,7 +726,7 @@
                                         <span class="menu-icon">💰</span>
                                         <span>Billing</span>
                                     </a>
-                                    <a href="reports.jsp" class="menu-item">
+                                    <a href="${pageContext.request.contextPath}/report-servlet" class="menu-item">
                                         <span class="menu-icon">📈</span>
                                         <span>Reports</span>
                                     </a>
@@ -823,7 +823,7 @@
                                                                 <% List<Reservation> reservations = (List<Reservation>)
                                                                         request.getAttribute("reservations");
                                                                         DateTimeFormatter formatter =
-                                                                        DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm");
+                                                                        DateTimeFormatter.ofPattern("MMM dd, yyyyHH:mm");
 
                                                                         if (reservations != null &&
                                                                         !reservations.isEmpty())

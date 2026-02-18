@@ -2,10 +2,11 @@
     <%@ page contentType="text/html;charset=UTF-8" language="java" %>
         <%@ page import="java.util.*, com.buddhi.oceanviewresort.model.entity.User" %>
             <% // Check if user is logged in as staff
-                 String username=(String) session.getAttribute("username"); String
+                String username=(String) session.getAttribute("username"); String
                 role=(String) session.getAttribute("role"); if (username==null) { response.sendRedirect("login.jsp");
                 return; } // Get guests list from request attribute (set by UserServlet)
-                List<User> guests = (List<User>) request.getAttribute("users");
+                 List<User> guests = (List<User>
+                    ) request.getAttribute("users");
                     if (guests == null) {
                     guests = new ArrayList<>();
                         }
@@ -934,7 +935,7 @@
                                             <span class="menu-icon">💰</span>
                                             <span>Billing</span>
                                         </a>
-                                        <a href="reports.jsp" class="menu-item">
+                                        <a href="${pageContext.request.contextPath}/report-servlet" class="menu-item">
                                             <span class="menu-icon">📈</span>
                                             <span>Reports</span>
                                         </a>

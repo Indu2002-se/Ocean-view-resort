@@ -34,6 +34,28 @@ public class BillDAO {
         }
     }
 
+    public java.util.List<Bill> getAllBills() {
+        java.util.List<Bill> bills = new java.util.ArrayList<>();
+        String sql = "SELECT * FROM bill";
+        try (Connection conn = DBConnection.getInstance().getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                bills.add(Bill.builder()
+                        .billId(rs.getInt("billId"))
+                        .reservationNo(rs.getString("reservationNo"))
+                        .amount(rs.getDouble("amount"))
+                        .issueDate(rs.getTimestamp("issue_date").toLocalDateTime())
+                        .status(rs.getString("status"))
+                        .build());
+            }
+        } catch (SQLException e) {
+            System.err.println("Error fetching all bills: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return bills;
+    }
+
     public Optional<Bill> getBillByReservationNo(String reservationNo) {
         String sql = "SELECT * FROM bill WHERE reservationNo = ?";
         try (Connection conn = DBConnection.getInstance().getConnection();
