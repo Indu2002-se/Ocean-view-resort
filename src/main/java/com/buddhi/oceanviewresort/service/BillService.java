@@ -76,6 +76,10 @@ public class BillService {
         return reservationDAO.getAllReservations();
     }
 
+    public java.util.List<Bill> getAllBills() {
+        return billDAO.getAllBills();
+    }
+
     private double getRoomRate(int roomTypeId) {
         switch (roomTypeId) {
             case 1:
