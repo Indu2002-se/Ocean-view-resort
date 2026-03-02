@@ -12,7 +12,7 @@ public class ExtendedStayBillStrategy implements BillStrategy {
 
         double total = days * roomRate;
         if (days > 7) {
-            return total * 0.90; // 10% discount for extended stay
+            return total * 0.90;
         }
         return total;
     }
