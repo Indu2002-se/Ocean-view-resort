@@ -3,7 +3,7 @@
     <%@ page contentType="text/html;charset=UTF-8" language="java" %>
         <%@ page import="java.util.*" %>
             <% // Check if user is logged in
-                String  username=(String) session.getAttribute("username"); String
+                String username=(String) session.getAttribute("username"); String
                 role=(String) session.getAttribute("role"); if (username==null) { response.sendRedirect("login.jsp");
                 return; } %>
                 <!DOCTYPE html>
@@ -591,7 +591,7 @@
                         <nav class="sidebar-menu">
                             <div class="menu-section">
                                 <div class="menu-title">Main Menu</div>
-                                <a href="dashboard.jsp" class="menu-item active">
+                                <a href="StaffDashboard.jsp" class="menu-item active">
                                     <span class="menu-icon">📊</span>
                                     <span>Dashboard</span>
                                 </a>
