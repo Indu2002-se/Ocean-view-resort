@@ -8,11 +8,11 @@
                         session.getAttribute("username"); String role=(String) session.getAttribute("role"); if
                         (username==null || !"MANAGER".equals(role)) { response.sendRedirect(request.getContextPath()
                         + "/Auth/Login.jsp?role=MANAGER" ); return; } // Fetch data
-                        List<Reservation> reservations = new
+                         List<Reservation> reservations = new
                         ArrayList<>();
                             List<Room> rooms = new ArrayList<>();
                                     List<Staff> staffList = new ArrayList<>();
-                                            List<User> guests = new ArrayList<>();
+
                                                     long totalReservations = 0;
                                                     long availableRooms = 0;
                                                     long totalStaff = 0;
@@ -37,10 +37,7 @@
                                                     } catch (Exception e) { System.out.println("Error fetching staff: "
                                                     + e.getMessage()); }
 
-                                                    try {
-                                                    guests = UserService.getInstance().getAllUsers();
-                                                    } catch (Exception e) { System.out.println("Error fetching guests: "
-                                                    + e.getMessage()); }
+
 
                                                     try {
                                                     List<Bill> bills = BillService.getInstance().getAllBills();
@@ -1098,7 +1095,8 @@
                                                                                                         </td>
                                                                                                         <td>
                                                                                                             <span
-                                                                                                                class="status-badge <%= r.getStatus() != null ? r.getStatus().toLowerCase() : "pending"
+                                                                                                                class="status-badge <%= r.getStatus() != null ? r.getStatus().toLowerCase() : " pending"
+
                                                                                                                 %>">
                                                                                                                 <%= r.getStatus()
                                                                                                                     !=null
@@ -1252,7 +1250,7 @@
                                                                                                     </td>
                                                                                                     <td>
                                                                                                         <span
-                                                                                                            class="status-badge <%= r.getStatus() != null ? r.getStatus().toLowerCase() : "pending"
+                                                                                                            class="status-badge <%= r.getStatus() != null ? r.getStatus().toLowerCase() : " pending"
 
                                                                                                             %>">
                                                                                                             <%= r.getStatus()

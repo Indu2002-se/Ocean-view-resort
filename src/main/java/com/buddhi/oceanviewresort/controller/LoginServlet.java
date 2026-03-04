@@ -1,7 +1,6 @@
 package com.buddhi.oceanviewresort.controller;
 
-import com.buddhi.oceanviewresort.model.entity.User;
-import com.buddhi.oceanviewresort.service.UserService;
+
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -13,11 +12,11 @@ import java.io.IOException;
 
 @WebServlet(value = "/login-servlet")
 public class LoginServlet extends HttpServlet {
-    private UserService userService;
+
 
     public void init() throws ServletException {
         super.init();
-        this.userService = UserService.getInstance();
+
     }
 
     @Override
@@ -52,17 +51,8 @@ public class LoginServlet extends HttpServlet {
                     session.setAttribute("role", "MANAGER");
                     redirectUrl = "/Dashboard/ManagerDashboard.jsp";
                 }
-            } else {
-                // GUEST Login
-                User user = userService.getUser(username, password);
-                if (user != null) {
-                    isAuthenticated = true;
-                    session.setAttribute("loggedUser", user);
-                    session.setAttribute("username", user.getUserName());
-                    session.setAttribute("role", "GUEST");
-                    redirectUrl = "/Dashboard/GuestDashboard.jsp";
-                }
             }
+
 
             if (isAuthenticated) {
                 resp.sendRedirect(req.getContextPath() + redirectUrl);

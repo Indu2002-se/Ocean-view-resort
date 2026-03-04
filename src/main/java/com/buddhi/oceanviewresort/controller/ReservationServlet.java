@@ -2,7 +2,7 @@ package com.buddhi.oceanviewresort.controller;
 
 import com.buddhi.oceanviewresort.model.entity.Reservation;
 import com.buddhi.oceanviewresort.service.ReservationService;
-import com.buddhi.oceanviewresort.service.UserService;
+
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,12 +16,12 @@ import java.util.List;
 @WebServlet("/reservation-servlet")
 public class ReservationServlet extends HttpServlet {
     private ReservationService reservationService;
-    private UserService userService;
+
 
     public void init() throws ServletException {
         super.init();
         this.reservationService = ReservationService.getInstance();
-        this.userService = UserService.getInstance();
+
     }
 
     @Override

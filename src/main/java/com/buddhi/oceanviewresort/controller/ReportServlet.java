@@ -3,11 +3,11 @@ package com.buddhi.oceanviewresort.controller;
 import com.buddhi.oceanviewresort.model.entity.Bill;
 import com.buddhi.oceanviewresort.model.entity.Reservation;
 import com.buddhi.oceanviewresort.model.entity.Room;
-import com.buddhi.oceanviewresort.model.entity.User;
+
 import com.buddhi.oceanviewresort.service.BillService;
 import com.buddhi.oceanviewresort.service.ReservationService;
 import com.buddhi.oceanviewresort.service.RoomService;
-import com.buddhi.oceanviewresort.service.UserService;
+
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -21,7 +21,7 @@ import java.util.List;
 public class ReportServlet extends HttpServlet {
     private ReservationService reservationService;
     private BillService billService;
-    private UserService userService;
+
     private RoomService roomService;
 
     @Override
@@ -29,7 +29,7 @@ public class ReportServlet extends HttpServlet {
         super.init();
         this.reservationService = ReservationService.getInstance();
         this.billService = BillService.getInstance();
-        this.userService = UserService.getInstance();
+
         this.roomService = new RoomService();
     }
 
@@ -39,13 +39,13 @@ public class ReportServlet extends HttpServlet {
             // Fetch all data for reports
             List<Reservation> reservations = reservationService.getAllReservations();
             List<Bill> bills = billService.getAllBills();
-            List<User> users = userService.getAllUsers();
+
             List<Room> rooms = roomService.getAllRooms();
 
             // Set attributes for JSP
             req.setAttribute("reservations", reservations);
             req.setAttribute("bills", bills);
-            req.setAttribute("users", users);
+
             req.setAttribute("rooms", rooms);
 
             // Compute summary stats
