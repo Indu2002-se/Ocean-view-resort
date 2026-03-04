@@ -1,596 +1,634 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ocean View Resort — Staff & Management Portal</title>
-    <meta name="description" content="Internal staff and management portal for Ocean View Resort, Galle, Sri Lanka. Authorized personnel only.">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <style>
-        *, *::before, *::after {
-            margin: 0; padding: 0; box-sizing: border-box;
-        }
+    <!DOCTYPE html>
+    <html lang="en">
 
-        :root {
-            --gold: #c9a55c;
-            --gold-light: #e8c98a;
-            --gold-pale: rgba(201,165,92,0.10);
-            --dark: #0a0a0c;
-            --dark-mid: #111114;
-            --dark-panel: #0e0e11;
-            --dark-card: #141418;
-            --text: #fff;
-            --text-muted: rgba(255,255,255,0.55);
-            --text-faint: rgba(255,255,255,0.22);
-            --accent-staff: #5c8ec9;
-            --accent-staff-glow: rgba(92,142,201,0.15);
-            --accent-mgr: #c97a5c;
-            --accent-mgr-glow: rgba(201,122,92,0.15);
-        }
-
-        html, body {
-            height: 100%;
-            overflow: hidden;
-        }
-
-        body {
-            font-family: 'Montserrat', sans-serif;
-            background: var(--dark);
-            color: var(--text);
-        }
-
-        /* ── FULL-SCREEN BG ── */
-        .bg-layer {
-            position: fixed;
-            inset: 0;
-            z-index: 0;
-        }
-
-        .bg-image {
-            position: absolute;
-            inset: 0;
-            background: url('assets/hero.jpg') center/cover no-repeat;
-            transform: scale(1.05);
-            animation: slowZoom 22s ease-in-out infinite alternate;
-        }
-
-        @keyframes slowZoom {
-            from { transform: scale(1.05); }
-            to   { transform: scale(1.14); }
-        }
-
-        .bg-overlay {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(
-                160deg,
-                rgba(10,10,12,0.92) 0%,
-                rgba(10,10,12,0.82) 40%,
-                rgba(10,10,12,0.88) 100%
-            );
-        }
-
-        /* grain */
-        .bg-grain {
-            position: absolute;
-            inset: 0;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-            pointer-events: none;
-        }
-
-        /* ambient glow orbs */
-        .bg-orb {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(120px);
-            opacity: 0.08;
-            pointer-events: none;
-        }
-        .bg-orb--gold {
-            width: 500px; height: 500px;
-            background: var(--gold);
-            top: -100px; right: -100px;
-        }
-        .bg-orb--blue {
-            width: 400px; height: 400px;
-            background: var(--accent-staff);
-            bottom: -60px; left: -60px;
-        }
-
-        /* ── CONTENT WRAPPER ── */
-        .portal {
-            position: relative;
-            z-index: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            padding: 40px 24px;
-        }
-
-        /* ── LOGO ── */
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            margin-bottom: 14px;
-        }
-
-        .logo-mark {
-            width: 48px; height: 48px;
-            border: 1.5px solid var(--gold);
-            border-radius: 50%;
-            display: grid; place-items: center;
-            font-size: 22px;
-            background: rgba(201,165,92,0.06);
-        }
-
-        .logo-text {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 24px;
-            font-weight: 400;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-        }
-
-        .logo-text span { color: var(--gold); }
-
-        /* ── HEADER ── */
-        .portal-header {
-            text-align: center;
-            margin-bottom: 52px;
-        }
-
-        .portal-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 7px 20px;
-            border: 1px solid rgba(201,165,92,0.25);
-            border-radius: 100px;
-            font-size: 9px;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            color: var(--gold);
-            background: var(--gold-pale);
-            backdrop-filter: blur(4px);
-            margin-bottom: 28px;
-        }
-
-        .portal-badge::before {
-            content: '';
-            width: 6px; height: 6px;
-            background: var(--gold);
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(1.6); }
-        }
-
-        .portal-title {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: clamp(32px, 4.5vw, 52px);
-            font-weight: 300;
-            line-height: 1.15;
-            letter-spacing: 1px;
-            margin-bottom: 14px;
-        }
-
-        .portal-title em {
-            font-style: italic;
-            color: var(--gold-light);
-        }
-
-        .portal-subtitle {
-            font-size: 12px;
-            line-height: 1.8;
-            color: var(--text-muted);
-            max-width: 420px;
-            margin: 0 auto;
-            font-weight: 300;
-        }
-
-        /* ── ROLE CARDS ── */
-        .role-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 24px;
-            width: 100%;
-            max-width: 720px;
-            margin-bottom: 48px;
-        }
-
-        .role-card {
-            position: relative;
-            background: rgba(193, 193, 193, 0.42);
-            border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 16px;
-            padding: 44px 32px 40px;
-            cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            gap: 18px;
-            text-decoration: none;
-            overflow: hidden;
-        }
-
-        /* card shine effect */
-        .role-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: -100%;
-            width: 100%; height: 100%;
-            background: linear-gradient(
-                90deg,
-                transparent,
-                rgba(255,255,255,0.03),
-                transparent
-            );
-            transition: left 0.6s ease;
-        }
-
-        .role-card:hover::before {
-            left: 100%;
-        }
-
-        /* card glow ring */
-        .role-card::after {
-            content: '';
-            position: absolute;
-            inset: -1px;
-            border-radius: 16px;
-            padding: 1px;
-            background: linear-gradient(135deg, transparent 10%, var(--gold) 100%);
-            webkit-mask: linear-gradient(#fff, #fff) content-box, linear-gradient(#fff, #fff);
-            mask: linear-gradient(#fff, #fff) content-box, linear-gradient(#fff, #fff);
-            -webkit-mask-composite: xor;
-            mask-composite: exclude;
-            opacity: 0;
-            transition: opacity 0.4s ease;
-        }
-
-        .role-card:hover::after { opacity: 1; }
-
-        .role-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 24px 64px rgba(0,0,0,0.5);
-        }
-
-        /* Staff card hover */
-        .role-card--staff:hover {
-            background: var(--accent-staff-glow);
-            border-color: rgba(92,142,201,0.3);
-        }
-        .role-card--staff:hover::after {
-            background: linear-gradient(135deg, transparent 40%, var(--accent-staff) 100%);
-        }
-
-        /* Manager card hover */
-        .role-card--mgr:hover {
-            background: var(--accent-mgr-glow);
-            border-color: rgba(201,122,92,0.3);
-        }
-        .role-card--mgr:hover::after {
-            background: linear-gradient(135deg, transparent 40%, var(--accent-mgr) 100%);
-        }
-
-        .role-icon-wrap {
-            width: 72px; height: 72px;
-            border-radius: 50%;
-            display: grid; place-items: center;
-            font-size: 32px;
-            transition: all 0.4s ease;
-        }
-
-        .role-card--staff .role-icon-wrap {
-            background: var(--accent-staff-glow);
-            border: 1px solid rgba(92,142,201,0.2);
-        }
-
-        .role-card--mgr .role-icon-wrap {
-            background: var(--accent-mgr-glow);
-            border: 1px solid rgba(201,122,92,0.2);
-        }
-
-        .role-card:hover .role-icon-wrap {
-            transform: scale(1.1);
-        }
-
-        .role-label {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 11px;
-            letter-spacing: 3.5px;
-            text-transform: uppercase;
-            color: #fff;
-            font-weight: 600;
-            transition: color 0.3s;
-        }
-
-        .role-card--staff:hover .role-label { color: var(--accent-staff); }
-        .role-card--mgr:hover .role-label   { color: var(--accent-mgr); }
-
-        .role-desc {
-            font-size: 12px;
-            color: var(--text-muted);
-            line-height: 1.75;
-            font-weight: 300;
-            max-width: 240px;
-        }
-
-        .role-arrow {
-            margin-top: 6px;
-            font-size: 10px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            color: var(--text-faint);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s;
-        }
-
-        .role-arrow span {
-            display: inline-block;
-            transition: transform 0.3s;
-        }
-
-        .role-card:hover .role-arrow {
-            color: var(--gold);
-        }
-
-        .role-card:hover .role-arrow span {
-            transform: translateX(6px);
-        }
-
-        /* ── FOOTER ── */
-        .portal-footer {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 28px;
-            flex-wrap: wrap;
-        }
-
-        .footer-item {
-            font-size: 10px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            color: var(--text-faint);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .footer-dot {
-            width: 3px; height: 3px;
-            background: var(--text-faint);
-            border-radius: 50%;
-        }
-
-        .footer-divider {
-            width: 1px; height: 14px;
-            background: rgba(255,255,255,0.08);
-        }
-
-        /* ── TIME DISPLAY ── */
-        .time-display {
-            position: fixed;
-            top: 40px; right: 48px;
-            text-align: right;
-            z-index: 10;
-        }
-
-        .time-clock {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 28px;
-            font-weight: 300;
-            color: var(--text);
-            letter-spacing: 2px;
-        }
-
-        .time-date {
-            font-size: 9px;
-            letter-spacing: 2.5px;
-            text-transform: uppercase;
-            color: var(--text-faint);
-            margin-top: 4px;
-        }
-
-        /* ── RESTRICTED NOTICE ── */
-        .restricted-notice {
-            position: fixed;
-            top: 44px; left: 48px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            z-index: 10;
-        }
-
-        .restricted-icon {
-            width: 32px; height: 32px;
-            border: 1px solid rgba(201,165,92,0.25);
-            border-radius: 8px;
-            display: grid; place-items: center;
-            font-size: 14px;
-            background: rgba(201,165,92,0.05);
-        }
-
-        .restricted-text {
-            font-size: 9px;
-            letter-spacing: 2.5px;
-            text-transform: uppercase;
-            color: var(--text-faint);
-            line-height: 1.6;
-        }
-
-        .restricted-text strong {
-            color: var(--gold);
-            font-weight: 500;
-            display: block;
-        }
-
-        /* ── ENTRANCE ANIMATIONS ── */
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(28px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to   { opacity: 1; }
-        }
-
-        .logo             { animation: fadeUp 0.7s ease both; animation-delay: 0.1s; }
-        .portal-badge     { animation: fadeUp 0.7s ease both; animation-delay: 0.2s; }
-        .portal-title     { animation: fadeUp 0.7s ease both; animation-delay: 0.3s; }
-        .portal-subtitle  { animation: fadeUp 0.7s ease both; animation-delay: 0.4s; }
-        .role-card--staff { animation: fadeUp 0.7s ease both; animation-delay: 0.55s; }
-        .role-card--mgr   { animation: fadeUp 0.7s ease both; animation-delay: 0.65s; }
-        .portal-footer    { animation: fadeUp 0.7s ease both; animation-delay: 0.8s; }
-        .restricted-notice{ animation: fadeIn 0.8s ease both; animation-delay: 0.6s; }
-        .time-display     { animation: fadeIn 0.8s ease both; animation-delay: 0.6s; }
-
-        /* ── RESPONSIVE ── */
-        @media (max-width: 640px) {
-            html, body { overflow: auto; }
-            .role-grid {
-                grid-template-columns: 1fr;
-                max-width: 380px;
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Ocean View Resort — Staff & Management Portal</title>
+        <meta name="description"
+            content="Internal staff and management portal for Ocean View Resort, Galle, Sri Lanka.">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link
+            href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600;700&display=swap"
+            rel="stylesheet">
+        <style>
+            *,
+            *::before,
+            *::after {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
             }
-            .restricted-notice,
-            .time-display { display: none; }
-            .portal { padding: 60px 20px 40px; }
-            .role-card { padding: 36px 24px 32px; }
-        }
 
-        @media (max-width: 400px) {
-            .portal-title { font-size: 28px; }
-        }
-    </style>
-</head>
-<body>
+            :root {
+                --gold: #c9a55c;
+                --gold-dark: #a8833a;
+                --gold-light: #e8c98a;
+                --staff: #3b82f6;
+                --staff-light: #eff6ff;
+                --staff-border: #bfdbfe;
+                --mgr: #dc6b3a;
+                --mgr-light: #fff7ed;
+                --mgr-border: #fed7aa;
+                --text: #111827;
+                --text-2: #020e13;
+                --text-3: #000000;
+                --text-4: #020e13;
+                --border: #e5e7eb;
+                --bg: #ffffff;
+            }
 
-<!-- ═══════════ BACKGROUND ═══════════ -->
-<div class="bg-layer">
-    <div class="bg-image"></div>
-    <div class="bg-overlay"></div>
-    <div class="bg-grain"></div>
-    <div class="bg-orb bg-orb--gold"></div>
-    <div class="bg-orb bg-orb--blue"></div>
-</div>
+            html,
+            body {
+                height: 100%;
+                overflow: hidden;
+                font-family: 'Inter', sans-serif;
+            }
 
-<!-- ═══════════ RESTRICTED NOTICE ═══════════ -->
-<div class="restricted-notice" id="restrictedNotice">
-    <div class="restricted-icon">🔒</div>
-    <div class="restricted-text">
-        <strong>Authorized Access Only</strong>
-        Internal Staff Portal
-    </div>
-</div>
+            /* ══════ SPLIT LAYOUT ══════ */
+            .split {
+                display: flex;
+                height: 100vh;
+                width: 100vw;
+            }
 
-<!-- ═══════════ TIME DISPLAY ═══════════ -->
-<div class="time-display" id="timeDisplay">
-    <div class="time-clock" id="timeClock">--:--</div>
-    <div class="time-date" id="timeDate">Loading...</div>
-</div>
+            /* ══════ LEFT — PURE IMAGE ══════ */
+            .split-left {
+                width: 50%;
+                position: relative;
+                overflow: hidden;
+                flex-shrink: 0;
+            }
 
-<!-- ═══════════ MAIN PORTAL ═══════════ -->
-<div class="portal">
+            .split-left img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                display: block;
+                animation: slowZoom 20s ease-in-out infinite alternate;
+            }
 
-    <!-- Logo -->
-    <div class="logo">
-        <div class="logo-mark">⚓</div>
-        <div class="logo-text">Ocean<span>.View</span></div>
-    </div>
+            @keyframes slowZoom {
+                from {
+                    transform: scale(1.0);
+                }
 
-    <!-- Header -->
-    <div class="portal-header">
-        <div class="portal-badge">Staff & Management Portal</div>
-        <h1 class="portal-title">
-            Welcome to the<br>
-            <em>Operations Hub</em>
-        </h1>
-        <p class="portal-subtitle">
-            Access the resort management system. Select your role below
-            to proceed to the secure sign-in portal.
-        </p>
-    </div>
+                to {
+                    transform: scale(1.08);
+                }
+            }
 
-    <!-- Role Selection Cards -->
-    <div class="role-grid">
+            /* Thin gold line on right edge */
+            .split-left::after {
+                content: '';
+                position: absolute;
+                top: 0;
+                right: 0;
+                width: 4px;
+                height: 100%;
+                background: linear-gradient(180deg, transparent 0%, var(--gold) 30%, var(--gold) 70%, transparent 100%);
+                z-index: 2;
+            }
 
-        <div class="role-card role-card--staff" id="staffCard" onclick="selectRole('STAFF')">
-            <div class="role-icon-wrap">🛎️</div>
-            <div class="role-label">Staff</div>
-            <div class="role-desc">
-                Handle check-ins, manage reservations, and assist day-to-day operations.
+            /* ══════ RIGHT — WHITE PANEL ══════ */
+            .split-right {
+                width: 50%;
+                background: var(--bg);
+                display: flex;
+                flex-direction: column;
+                overflow: hidden;
+            }
+
+            /* Gold top accent line */
+            .top-line {
+                height: 4px;
+                background: linear-gradient(90deg, var(--gold), var(--gold-light), var(--gold));
+                flex-shrink: 0;
+            }
+
+            /* Main scrollable area */
+            .portal-body {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                padding: 40px 56px;
+                overflow-y: auto;
+            }
+
+            /* ── Logo ── */
+            .logo-row {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                margin-bottom: 48px;
+                animation: fadeUp 0.5s ease both;
+            }
+
+            .logo-icon {
+                width: 44px;
+                height: 44px;
+                border-radius: 10px;
+                background: #111827;
+                display: grid;
+                place-items: center;
+                font-size: 18px;
+                flex-shrink: 0;
+            }
+
+            .logo-text-wrap {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .logo-name {
+                font-family: 'Playfair Display', serif;
+                font-size: 16px;
+                font-weight: 700;
+                letter-spacing: 1px;
+                color: var(--text);
+                line-height: 1;
+            }
+
+            .logo-name span {
+                color: var(--gold-dark);
+            }
+
+            .logo-sub {
+                font-size: 9px;
+                letter-spacing: 2.5px;
+                text-transform: uppercase;
+                color: var(--text-4);
+                margin-top: 3px;
+            }
+
+            /* ── Heading ── */
+            .portal-eyebrow {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                font-size: 10px;
+                letter-spacing: 3px;
+                text-transform: uppercase;
+                color: var(--gold-dark);
+                font-weight: 600;
+                margin-bottom: 12px;
+                animation: fadeUp 0.5s ease 0.05s both;
+            }
+
+            .portal-eyebrow::before {
+                content: '';
+                width: 18px;
+                height: 2px;
+                background: var(--gold);
+                border-radius: 1px;
+            }
+
+            .portal-heading {
+                font-family: 'Playfair Display', serif;
+                font-size: clamp(26px, 3vw, 38px);
+                font-weight: 700;
+                color: var(--text);
+                line-height: 1.2;
+                letter-spacing: -0.5px;
+                margin-bottom: 10px;
+                animation: fadeUp 0.5s ease 0.1s both;
+            }
+
+            .portal-heading em {
+                font-style: italic;
+                color: var(--gold-dark);
+                font-weight: 600;
+            }
+
+            .portal-sub {
+                font-size: 13px;
+                color: var(--text-3);
+                line-height: 1.75;
+                font-weight: 400;
+                max-width: 360px;
+                margin-bottom: 36px;
+                animation: fadeUp 0.5s ease 0.15s both;
+            }
+
+            /* ── Divider ── */
+            .divider {
+                display: flex;
+                align-items: center;
+                gap: 14px;
+                margin-bottom: 24px;
+                animation: fadeUp 0.5s ease 0.2s both;
+            }
+
+            .divider-line {
+                flex: 1;
+                height: 1px;
+                background: var(--border);
+            }
+
+            .divider-label {
+                font-size: 10px;
+                letter-spacing: 2px;
+                text-transform: uppercase;
+                color: var(--text-4);
+                white-space: nowrap;
+            }
+
+            /* ── Role Cards ── */
+            .cards {
+                display: flex;
+                flex-direction: column;
+                gap: 14px;
+                animation: fadeUp 0.5s ease 0.25s both;
+            }
+
+            .role-card {
+                display: flex;
+                align-items: center;
+                gap: 16px;
+                padding: 20px 22px;
+                border-radius: 14px;
+                border: 1.5px solid var(--border);
+                background: #f9fafb;
+                cursor: pointer;
+                text-decoration: none;
+                color: inherit;
+                transition: all 0.28s cubic-bezier(0.23, 1, 0.32, 1);
+                position: relative;
+                overflow: hidden;
+            }
+
+            /* Hover fill */
+            .role-card::before {
+                content: '';
+                position: absolute;
+                inset: 0;
+                opacity: 0;
+                transition: opacity 0.28s ease;
+            }
+
+            .role-card--staff::before {
+                background: var(--staff-light);
+            }
+
+            .role-card--mgr::before {
+                background: var(--mgr-light);
+            }
+
+            .role-card:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
+            }
+
+            .role-card--staff:hover {
+                border-color: var(--staff-border);
+            }
+
+            .role-card--mgr:hover {
+                border-color: var(--mgr-border);
+            }
+
+            .role-card:hover::before {
+                opacity: 1;
+            }
+
+            /* Icon */
+            .card-icon {
+                width: 50px;
+                height: 50px;
+                border-radius: 12px;
+                display: grid;
+                place-items: center;
+                font-size: 22px;
+                flex-shrink: 0;
+                position: relative;
+                z-index: 1;
+                transition: transform 0.28s ease;
+            }
+
+            .role-card--staff .card-icon {
+                background: var(--staff-light);
+                border: 1.5px solid var(--staff-border);
+            }
+
+            .role-card--mgr .card-icon {
+                background: var(--mgr-light);
+                border: 1.5px solid var(--mgr-border);
+            }
+
+            .role-card:hover .card-icon {
+                transform: scale(1.08);
+            }
+
+            /* Text */
+            .card-body {
+                flex: 1;
+                position: relative;
+                z-index: 1;
+            }
+
+            .card-title {
+                font-size: 14px;
+                font-weight: 600;
+                color: var(--text);
+                margin-bottom: 3px;
+                letter-spacing: 0.2px;
+            }
+
+            .role-card--staff:hover .card-title {
+                color: var(--staff);
+            }
+
+            .role-card--mgr:hover .card-title {
+                color: var(--mgr);
+            }
+
+            .card-desc {
+                font-size: 12px;
+                color: var(--text-3);
+                line-height: 1.55;
+                font-weight: 400;
+            }
+
+            /* Arrow */
+            .card-arrow {
+                width: 32px;
+                height: 32px;
+                border-radius: 8px;
+                border: 1.5px solid var(--border);
+                background: #fff;
+                display: grid;
+                place-items: center;
+                color: var(--text-4);
+                font-size: 13px;
+                flex-shrink: 0;
+                position: relative;
+                z-index: 1;
+                transition: all 0.28s ease;
+            }
+
+            .role-card--staff:hover .card-arrow {
+                background: var(--staff);
+                border-color: var(--staff);
+                color: #fff;
+                transform: translateX(3px);
+            }
+
+            .role-card--mgr:hover .card-arrow {
+                background: var(--mgr);
+                border-color: var(--mgr);
+                color: #fff;
+                transform: translateX(3px);
+            }
+
+            /* Keyboard hint */
+            .kb-hint {
+                font-size: 10px;
+                letter-spacing: 1px;
+                color: var(--text-4);
+                margin-top: 16px;
+                text-align: center;
+                animation: fadeUp 0.5s ease 0.35s both;
+            }
+
+            .kb-hint kbd {
+                display: inline-block;
+                padding: 2px 7px;
+                border-radius: 5px;
+                border: 1.5px solid var(--border);
+                background: #f3f4f6;
+                font-family: inherit;
+                font-size: 10px;
+                color: var(--text-2);
+                font-weight: 600;
+            }
+
+            /* ── Footer ── */
+            .portal-footer {
+                padding: 18px 56px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                border-top: 1px solid var(--border);
+                flex-shrink: 0;
+                animation: fadeUp 0.5s ease 0.4s both;
+            }
+
+            .footer-copy {
+                font-size: 10px;
+                letter-spacing: 1px;
+                text-transform: uppercase;
+                color: var(--text-4);
+            }
+
+            .footer-clock {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                font-size: 11px;
+                color: var(--text-3);
+                font-weight: 500;
+            }
+
+            .footer-clock::before {
+                content: '';
+                width: 6px;
+                height: 6px;
+                border-radius: 50%;
+                background: #22c55e;
+                animation: pulse 2s ease-in-out infinite;
+            }
+
+            @keyframes pulse {
+
+                0%,
+                100% {
+                    opacity: 1;
+                    transform: scale(1);
+                }
+
+                50% {
+                    opacity: 0.5;
+                    transform: scale(1.5);
+                }
+            }
+
+            /* Animations */
+            @keyframes fadeUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(18px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            /* ── RESPONSIVE ── */
+            @media (max-width: 820px) {
+
+                html,
+                body {
+                    overflow: auto;
+                }
+
+                .split {
+                    flex-direction: column;
+                    height: auto;
+                }
+
+                .split-left {
+                    width: 100%;
+                    height: 45vh;
+                }
+
+                .split-right {
+                    width: 100%;
+                }
+
+                .portal-body {
+                    padding: 36px 32px;
+                }
+
+                .portal-footer {
+                    padding: 16px 32px;
+                }
+            }
+
+            @media (max-width: 480px) {
+                .portal-body {
+                    padding: 28px 20px;
+                }
+
+                .portal-footer {
+                    padding: 14px 20px;
+                    flex-direction: column;
+                    gap: 8px;
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+
+        <div class="split">
+
+            <!-- ════════ LEFT — IMAGE ONLY ════════ -->
+            <div class="split-left">
+                <img src="assets/hero.jpg" alt="Ocean View Resort" draggable="false">
             </div>
-            <div class="role-arrow">Sign In <span>→</span></div>
-        </div>
 
-        <div class="role-card role-card--mgr" id="managerCard" onclick="selectRole('MANAGER')">
-            <div class="role-icon-wrap">💼</div>
-            <div class="role-label">Manager</div>
-            <div class="role-desc">
-                Full administrative access, financial reports, and complete system oversight.
+            <!-- ════════ RIGHT — WHITE PORTAL ════════ -->
+            <div class="split-right">
+
+                <div class="top-line"></div>
+
+                <div class="portal-body">
+
+                    <!-- Logo -->
+                    <div class="logo-row">
+                        <div class="logo-icon">⚓</div>
+                        <div class="logo-text-wrap">
+                            <div class="logo-name">Ocean<span>.View</span></div>
+                            <div class="logo-sub">Resort &amp; Spa · Internal Portal</div>
+                        </div>
+                    </div>
+
+                    <!-- Heading -->
+                    <div class="portal-eyebrow">Staff &amp; Manager Portal</div>
+
+                    <h1 class="portal-heading">
+                        Welcome to the<br>
+                        <em>Operations Hub</em>
+                    </h1>
+
+                    <p class="portal-sub">
+                        Select your role below to access the secure sign-in portal.
+                        Authorized personnel only — all sessions are monitored.
+                    </p>
+
+                    <!-- Divider -->
+                    <div class="divider">
+                        <div class="divider-line"></div>
+                        <span class="divider-label">Choose your access level</span>
+                        <div class="divider-line"></div>
+                    </div>
+
+                    <!-- Cards -->
+                    <div class="cards">
+
+                        <a class="role-card role-card--staff" href="Auth/Login.jsp?role=STAFF" id="staffCard"
+                            onclick="animateClick(this); return false;">
+                            <div class="card-icon">🛎️</div>
+                            <div class="card-body">
+                                <div class="card-title">Staff Access</div>
+                                <div class="card-desc">Manage check-ins, reservations &amp; daily resort operations.
+                                </div>
+                            </div>
+                            <div class="card-arrow">→</div>
+                        </a>
+
+                        <a class="role-card role-card--mgr" href="Auth/Login.jsp?role=MANAGER" id="managerCard"
+                            onclick="animateClick(this); return false;">
+                            <div class="card-icon">💼</div>
+                            <div class="card-body">
+                                <div class="card-title">Manager Access</div>
+                                <div class="card-desc">Full admin control — staff, reports, rooms &amp; system
+                                    oversight.</div>
+                            </div>
+                            <div class="card-arrow">→</div>
+                        </a>
+
+                    </div>
+
+                    <p class="kb-hint">
+                        Press <kbd>S</kbd> for Staff &nbsp;·&nbsp; <kbd>M</kbd> for Manager
+                    </p>
+
+                </div>
+
+                <!-- Footer -->
+                <div class="portal-footer">
+                    <span class="footer-copy">© 2025 Ocean View Resort &amp; Spa · Galle, Sri Lanka</span>
+                    <div class="footer-clock" id="footerClock">--:--</div>
+                </div>
+
             </div>
-            <div class="role-arrow">Sign In <span>→</span></div>
         </div>
 
-    </div>
+        <script>
+            // ── Navigate with click animation ──
+            function animateClick(el) {
+                el.style.transform = 'scale(0.97)';
+                el.style.transition = 'transform 0.15s ease';
+                setTimeout(() => {
+                    window.location.href = el.getAttribute('href');
+                }, 150);
+            }
 
-    <!-- Footer -->
-    <div class="portal-footer">
-        <div class="footer-item">
-            <div class="footer-dot"></div>
-            Ocean View Resort & Spa
-        </div>
-        <div class="footer-divider"></div>
-        <div class="footer-item">Galle, Sri Lanka</div>
-        <div class="footer-divider"></div>
-        <div class="footer-item">&copy; 2025 All Rights Reserved</div>
-    </div>
+            // ── Live Clock ──
+            function updateClock() {
+                const now = new Date();
+                const hh = String(now.getHours()).padStart(2, '0');
+                const mm = String(now.getMinutes()).padStart(2, '0');
+                document.getElementById('footerClock').textContent = hh + ':' + mm;
+            }
+            updateClock();
+            setInterval(updateClock, 10000);
 
-</div>
+            // ── Keyboard Shortcuts ──
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 's' || e.key === 'S') {
+                    animateClick(document.getElementById('staffCard'));
+                } else if (e.key === 'm' || e.key === 'M') {
+                    animateClick(document.getElementById('managerCard'));
+                }
+            });
+        </script>
 
-<script>
-    // ── Navigate to Login ──
-    function selectRole(role) {
-        window.location.href = 'Auth/Login.jsp?role=' + role;
-    }
+    </body>
 
-    // ── Live Clock ──
-    function updateTime() {
-        const now = new Date();
-        const hours = String(now.getHours()).padStart(2, '0');
-        const mins  = String(now.getMinutes()).padStart(2, '0');
-        document.getElementById('timeClock').textContent = hours + ':' + mins;
-
-        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        document.getElementById('timeDate').textContent = now.toLocaleDateString('en-US', options);
-    }
-
-    updateTime();
-    setInterval(updateTime, 10000);
-
-    // ── Keyboard shortcuts ──
-    document.addEventListener('keydown', function(e) {
-        if (e.key === '1' || e.key === 's' || e.key === 'S') {
-            selectRole('STAFF');
-        } else if (e.key === '2' || e.key === 'm' || e.key === 'M') {
-            selectRole('MANAGER');
-        }
-    });
-</script>
-
-</body>
-</html>
+    </html>
