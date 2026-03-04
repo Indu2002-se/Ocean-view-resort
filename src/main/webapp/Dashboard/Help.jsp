@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
     <%@ page import="java.util.*" %>
         <% // Check if user is logged in
-             String username=(String) session.getAttribute("username"); String role=(String)
+            String username=(String) session.getAttribute("username"); String role=(String)
             session.getAttribute("role"); if (username==null) { response.sendRedirect(request.getContextPath()
             + "/Auth/Login.jsp" ); return; } %>
             <!DOCTYPE html>
@@ -1078,18 +1078,18 @@
 
                         const stepsHtml = guide.steps.map((s, i) =>
                             `<li class="guide-step">
-                            <div class="step-num">${i + 1}</div>
+                            <div class="step-num">\${i + 1}</div>
                             <div class="step-content">
-                                <h4>${s.title}</h4>
-                                <p>${s.body}</p>
+                                <h4>\${s.title}</h4>
+                                <p>\${s.body}</p>
                             </div>
                         </li>`
                         ).join('');
 
                         document.getElementById('drawerBody').innerHTML =
-                            `<p class="guide-intro">${guide.intro}</p>
-                        <ul class="guide-steps">${stepsHtml}</ul>
-                        <div class="guide-tip">${guide.tip}</div>`;
+                            `<p class="guide-intro">\${guide.intro}</p>
+                        <ul class="guide-steps">\${stepsHtml}</ul>
+                        <div class="guide-tip">\${guide.tip}</div>`;
 
                         document.getElementById('drawerBody').scrollTop = 0;
                         document.getElementById('detailDrawer').classList.add('open');
