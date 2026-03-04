@@ -50,7 +50,7 @@ public class LoginServlet extends HttpServlet {
                     isAuthenticated = true;
                     session.setAttribute("username", username);
                     session.setAttribute("role", "MANAGER");
-                    redirectUrl = "/Dashboard/StaffDashboard.jsp";
+                    redirectUrl = "/Dashboard/ManagerDashboard.jsp";
                 }
             } else {
                 // GUEST Login
