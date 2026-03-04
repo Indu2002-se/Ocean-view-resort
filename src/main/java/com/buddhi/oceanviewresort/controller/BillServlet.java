@@ -30,9 +30,26 @@ public class BillServlet extends HttpServlet {
                 if (reservationNo != null && !reservationNo.isEmpty()) {
                     Bill bill = billService.generateBill(reservationNo);
                     req.setAttribute("bill", bill);
+
+                    // Fetch Reservation to get Email address and Guest Name
+                    com.buddhi.oceanviewresort.model.entity.Reservation reservation = billService
+                            .getReservationForBill(reservationNo);
+
+                    // Send Email Asynchronously
+                    if (reservation != null && reservation.getGuestEmail() != null) {
+                        java.util.concurrent.CompletableFuture.runAsync(() -> {
+                            com.buddhi.oceanviewresort.util.EmailUtility.sendBillEmail(
+                                    reservation.getGuestEmail(),
+                                    reservation.getGuestName(),
+                                    bill,
+                                    reservation);
+                        });
+                    }
+
                     req.getSession().setAttribute("message", "Bill generated successfully!");
                     req.getSession().setAttribute("messageType", "success");
-                    resp.sendRedirect(req.getContextPath() + "/bill-servlet?action=view&reservationNo=" + reservationNo);
+                    resp.sendRedirect(
+                            req.getContextPath() + "/bill-servlet?action=view&reservationNo=" + reservationNo);
                     return;
                 } else {
                     req.getSession().setAttribute("message", "Reservation Number is required to generate bill.");
