@@ -674,19 +674,7 @@
                             </a>
                         </div>
 
-                        <% if ("ADMIN".equals(role)) { %>
-                            <div class="menu-section">
-                                <div class="menu-title">Administration</div>
-                                <a href="${pageContext.request.contextPath}/user-servlet?action=list" class="menu-item">
-                                    <span class="menu-icon">👔</span>
-                                    <span>User Management</span>
-                                </a>
-                                <a href="settings.jsp" class="menu-item">
-                                    <span class="menu-icon">⚙️</span>
-                                    <span>Settings</span>
-                                </a>
-                            </div>
-                            <% } %>
+
 
                                 <div class="menu-section">
                                     <div class="menu-title">Support</div>
